@@ -1,6 +1,6 @@
 {
-  "id": "a4ec51a8-cace-492c-88c5-8c2f2bfbcc80",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "17d7fb15-349c-4d2f-b4c7-c734ea2c0524",
+  "prevId": "af7723e3-a8b9-414a-9a01-5ebcecdfc3da",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -228,7 +228,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "comment_order_id_orders_id_fk": {
+          "name": "comment_order_id_orders_id_fk",
+          "tableFrom": "comment",
+          "tableTo": "orders",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },

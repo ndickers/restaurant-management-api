@@ -11,5 +11,4 @@ const main = async () => {
 };
 main();
 const db = drizzle(client, { schema });
-
 export default db;

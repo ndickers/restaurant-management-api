@@ -1,27 +1,30 @@
 import { Hono } from "hono";
+
+import {
+  getOneCity,
+  addCity,
+  getAllCity,
+  updateCity,
+  removeCity,
+} from "./city.controller";
+
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
-import {
-  getAllOwner,
-  addOwner,
-  getOneOwner,
-  updateOwner,
-  deleteOwner,
-} from "./owner.controller.ts";
-export const ownersRoutes = new Hono();
+export const cityRoutes = new Hono();
 
-const ownerDetails = z.object({
-  restaurant_id: z.number(),
-  owner_id: z.number(),
+const inputCity = z.object({
+  name: z.string(),
+  code: z.number(),
+  state_id: z.number(),
 });
-ownersRoutes.delete("/owners/:id", deleteOwner);
-ownersRoutes.get("/owners", getAllOwner);
-ownersRoutes.get("/owners/:id", getOneOwner);
-ownersRoutes.patch("/owners/:id", updateOwner);
-ownersRoutes.post(
-  "/owners",
-  zValidator("json", ownerDetails, (result, c) => {
+
+cityRoutes.get("/city", getAllCity);
+
+cityRoutes.get("/city/:id", getOneCity);
+cityRoutes.post(
+  "/city",
+  zValidator("json", inputCity, (result, c) => {
     if (!result.success) {
       const postError = result.error.issues[0];
       const { path, message, expected } = postError;
@@ -37,5 +40,7 @@ ownersRoutes.post(
       }
     }
   }),
-  addOwner
+  addCity
 );
+cityRoutes.patch("/city/:id", updateCity);
+cityRoutes.delete("/city/:id", removeCity);

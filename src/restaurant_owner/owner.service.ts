@@ -12,7 +12,12 @@ export async function serveAllOwner(limit: number | undefined) {
         },
       });
     }
-    return await db.query.restaurant_owner.findMany();
+    return await db.query.restaurant_owner.findMany({
+      with: {
+        users: true,
+        restaurant: true,
+      },
+    });
   } catch (error) {
     return error;
   }
@@ -28,7 +33,7 @@ export async function fetchOneOwner(id) {
       },
     });
     if (getOrderStatus.length === 0) {
-      return { message: "Order status not found" };
+      return { message: "Restaurant owner status not found" };
     }
     return getOrderStatus;
   } catch (error) {
@@ -39,35 +44,35 @@ export async function fetchOneOwner(id) {
   }
 }
 
-export async function serveOrderStatus(orderStatus) {
+export async function serveOwner(orderStatus) {
   try {
     return await db
-      .insert(order_status)
+      .insert(restaurant_owner)
       .values(orderStatus)
-      .returning(order_status);
+      .returning(restaurant_owner);
   } catch (error) {
     return {
       error: true,
       message:
-        "Make sure the item you are inserting is in the status_catalog and orders table ",
+        "Make sure the item you are inserting is in the restaurant_owner and orders table ",
     };
   }
 }
 
-export async function serveOrderStatusUpdate(id, updates) {
+export async function serveOwnerUpdate(id, updates) {
   try {
     return await db
-      .update(order_status)
+      .update(restaurant_owner)
       .set(updates)
-      .where(eq(order_status.id, id))
+      .where(eq(restaurant_owner.id, id))
       .returning({
-        content: order_status,
+        content: restaurant_owner,
       });
   } catch (error) {
     return { error: true, message: "Unable to update. Try again later" };
   }
 }
 
-export async function deleteOrderStatus(id) {
-  return await db.delete(order_status).where(eq(order_status.id, id));
+export async function deleteResOwner(id) {
+  return await db.delete(restaurant_owner).where(eq(restaurant_owner.id, id));
 }

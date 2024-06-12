@@ -1,27 +1,29 @@
 import { Hono } from "hono";
+
+import {
+  getOneState,
+  addState,
+  getAllState,
+  updateState,
+  removeState,
+} from "./state.controller";
+
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
-import {
-  getAllOwner,
-  addOwner,
-  getOneOwner,
-  updateOwner,
-  deleteOwner,
-} from "./owner.controller.ts";
-export const ownersRoutes = new Hono();
+export const stateRoutes = new Hono();
 
-const ownerDetails = z.object({
-  restaurant_id: z.number(),
-  owner_id: z.number(),
+const inputState = z.object({
+  name: z.string(),
+  code: z.number(),
 });
-ownersRoutes.delete("/owners/:id", deleteOwner);
-ownersRoutes.get("/owners", getAllOwner);
-ownersRoutes.get("/owners/:id", getOneOwner);
-ownersRoutes.patch("/owners/:id", updateOwner);
-ownersRoutes.post(
-  "/owners",
-  zValidator("json", ownerDetails, (result, c) => {
+
+stateRoutes.get("/states", getAllState);
+
+stateRoutes.get("/states/:id", getOneState);
+stateRoutes.post(
+  "/states",
+  zValidator("json", inputState, (result, c) => {
     if (!result.success) {
       const postError = result.error.issues[0];
       const { path, message, expected } = postError;
@@ -37,5 +39,7 @@ ownersRoutes.post(
       }
     }
   }),
-  addOwner
+  addState
 );
+stateRoutes.patch("/states/:id", updateState);
+stateRoutes.delete("/states/:id", removeState);

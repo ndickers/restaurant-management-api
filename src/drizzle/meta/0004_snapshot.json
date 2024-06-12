@@ -1,6 +1,6 @@
 {
-  "id": "a4ec51a8-cace-492c-88c5-8c2f2bfbcc80",
-  "prevId": "00000000-0000-0000-0000-000000000000",
+  "id": "494e9143-aa73-4580-8eda-8ddb54c5cc23",
+  "prevId": "17d7fb15-349c-4d2f-b4c7-c734ea2c0524",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -59,7 +59,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "address_user_id_users_id_fk": {
+          "name": "address_user_id_users_id_fk",
+          "tableFrom": "address",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -228,7 +242,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "comment_order_id_orders_id_fk": {
+          "name": "comment_order_id_orders_id_fk",
+          "tableFrom": "comment",
+          "tableTo": "orders",
+          "columnsFrom": [
+            "order_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },

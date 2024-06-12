@@ -35,7 +35,7 @@ export const authRelations = relations(auth, ({ one }) => ({
   user: one(users, {
     fields: [auth.username],
     references: [users.name],
-  }),                                                        
+  }),
 }));
 // const authRelations = relations
 
@@ -43,6 +43,8 @@ export const usersRelation = relations(users, ({ many, one }) => ({
   restaurant_owner: many(restaurant_owner),
   driver: many(driver),
   orders: many(orders),
+  comment: many(comment),
+  address: many(address),
 }));
 
 export const restaurant_owner = pgTable("restaurant_owner", {
@@ -92,9 +94,14 @@ export const driverRelation = relations(driver, ({ one, many }) => ({
   orders: many(orders),
 }));
 
-export const restaurantRelations = relations(restaurant, ({ many }) => ({
+export const restaurantRelations = relations(restaurant, ({ many, one }) => ({
   restaurant_owner: many(restaurant_owner),
   orders: many(orders),
+  menu_item: many(menu_item),
+  city: one(city, {
+    fields: [restaurant.city_id],
+    references: [city.id],
+  }),
 }));
 
 export const orders = pgTable("orders", {
@@ -102,7 +109,9 @@ export const orders = pgTable("orders", {
   restaurant_id: integer(" restaurant_id").references(() => restaurant.id),
   estimated_delivery_time: date("estimated_delivery_time"),
   actual_delivery_time: date("actual_delivery_time"),
-  delivery_address_id: integer("delivery_address_id"),
+  delivery_address_id: integer("delivery_address_id").references(
+    () => address.id
+  ),
   user_id: integer("user_id").references(() => users.id),
   driver_id: integer("driver_id").references(() => driver.id),
   price: numeric("price"),
@@ -121,6 +130,10 @@ export const orderRelations = relations(orders, ({ one, many }) => {
     driver: one(driver, {
       fields: [orders.driver_id],
       references: [driver.id],
+    }),
+    address: one(address, {
+      fields: [orders.delivery_address_id],
+      references: [address.id],
     }),
     restaurant: one(restaurant, {
       fields: [orders.restaurant_id],
@@ -181,8 +194,8 @@ export const orderMenuRelations = relations(order_menu_item, ({ one }) => ({
 export const menu_item = pgTable("menu_item", {
   id: serial("id").primaryKey(),
   name: varchar("name"),
-  restaurant_id: integer("restaurant_id"),
-  category_id: integer("category_id"),
+  restaurant_id: integer("restaurant_id").references(() => restaurant.id),
+  category_id: integer("category_id").references(() => category.id),
   description: varchar("description"),
   ingredients: varchar("ingredients"),
   price: numeric("price"),
@@ -191,6 +204,95 @@ export const menu_item = pgTable("menu_item", {
   updated_at: timestamp("created_at").defaultNow(),
 });
 
-// export const menuItemRelations = relations(menu_item, ({ many }) => ({
-//   menu_item: many(menu_item),
-// }));
+export const menuItemRelations = relations(menu_item, ({ many, one }) => ({
+  order_menu_item: many(order_menu_item),
+  category: one(category, {
+    fields: [menu_item.category_id],
+    references: [category.id],
+  }),
+  restaurant: one(restaurant, {
+    fields: [menu_item.restaurant_id],
+    references: [restaurant.id],
+  }),
+}));
+
+export const city = pgTable("city", {
+  id: serial("id").primaryKey(),
+  name: varchar("name"),
+  state_id: integer("state_id").references(() => state.id),
+});
+
+export const cityRelations = relations(city, ({ many, one }) => ({
+  address: many(address),
+  restaurant: many(restaurant),
+  state: one(state, {
+    fields: [city.state_id],
+    references: [state.id],
+  }),
+}));
+
+export const state = pgTable("state", {
+  id: serial("id").primaryKey(),
+  name: varchar("name"),
+  code: varchar("state_id"),
+});
+
+export const stateRelation = relations(state, ({ many }) => ({
+  city: many(city),
+}));
+
+export const category = pgTable("category", {
+  id: serial("id").primaryKey(),
+  name: varchar("name"),
+});
+export const categoryRelations = relations(category, ({ many }) => ({
+  menu_item: many(menu_item),
+}));
+
+export const address = pgTable("address", {
+  id: serial("id").primaryKey(),
+  street_address_1: varchar("street_address_1"),
+  street_address_2: varchar("street_address_2"),
+  zip_code: varchar("zip_code"),
+  delivery_instructions: varchar("delivery_instructions"),
+  user_id: integer("user_id").references(() => users.id),
+  city_id: integer("city_id").references(() => city.id),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("created_at").defaultNow(),
+});
+export const addressRelations = relations(address, ({ one, many }) => ({
+  users: one(users, {
+    fields: [address.user_id],
+    references: [users.id],
+  }),
+  city: one(city, {
+    fields: [address.city_id],
+    references: [city.id],
+  }),
+  orders: many(orders),
+}));
+
+export const comment = pgTable("comment", {
+  id: serial("id").primaryKey(),
+  user_id: integer("user_id"),
+  order_id: integer("order_id").references(() => orders.id),
+  comment_text: varchar("comment_text"),
+  is_complaint: boolean("is_complaint"),
+  is_praise: boolean("is_praise"),
+  street_address_2: varchar("street_address_2"),
+  zip_code: varchar("zip_code"),
+  delivery_instructions: varchar("delivery_instructions"),
+  created_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("created_at").defaultNow(),
+});
+
+export const commentRelations = relations(comment, ({ one }) => ({
+  orders: one(orders, {
+    fields: [comment.order_id],
+    references: [orders.id],
+  }),
+  users: one(users, {
+    fields: [comment.user_id],
+    references: [users.id],
+  }),
+}));

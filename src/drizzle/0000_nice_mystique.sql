@@ -1,8 +1,43 @@
+CREATE TABLE IF NOT EXISTS "address" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"street_address_1" varchar,
+	"street_address_2" varchar,
+	"zip_code" varchar,
+	"delivery_instructions" varchar,
+	"user_id" integer,
+	"city_id" integer,
+	"created_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "auth" (
 	"id" serial NOT NULL,
 	"username" varchar,
 	"role" varchar,
 	"passwordS" varchar
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "category" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "city" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar,
+	"state_id" integer
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "comment" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"user_id" integer,
+	"order_id" integer,
+	"comment_text" varchar,
+	"is_complaint" boolean,
+	"is_praise" boolean,
+	"street_address_2" varchar,
+	"zip_code" varchar,
+	"delivery_instructions" varchar,
+	"created_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "driver" (
@@ -71,6 +106,12 @@ CREATE TABLE IF NOT EXISTS "restaurant_owner" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"restaurant_id" integer,
 	"owner_id" integer
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "state" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"name" varchar,
+	"state_id" varchar
 );
 --> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "status_catalog" (

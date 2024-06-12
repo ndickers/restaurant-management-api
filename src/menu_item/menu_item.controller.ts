@@ -1,18 +1,18 @@
 import {
-  serveAllOwner,
-  serveOwner,
-  fetchOneOwner,
-  serveOwnerUpdate,
-  deleteResOwner,
-} from "./owner.service";
-import { restaurant_owner } from "../drizzle/schema";
+  serveAllMenuItem,
+  serveMenuItem,
+  fetchOneMenuItem,
+  serveMenuItemUpdate,
+  deleteMenuItem,
+} from "./menu_item.service.ts";
+import { order_status } from "../drizzle/schema";
 
-export async function getAllOwner(c) {
+export async function getAllMenuItem(c) {
   const { limit } = c.req.query() as number;
-  const status = await serveAllOwner(limit);
+  const status = await serveAllMenuItem(limit);
   try {
     if (status.length === 0) {
-      return c.json({ message: "No registered restaurant owner" });
+      return c.json({ message: "No registered menu item" });
     }
     return c.json(status);
   } catch (error) {
@@ -20,18 +20,18 @@ export async function getAllOwner(c) {
   }
 }
 
-export async function getOneOwner(c) {
+export async function getOneMenuItem(c) {
   const id = c.req.param("id") as number;
-  const response = await fetchOneOwner(id);
+  const response = await fetchOneMenuItem(id);
   if (response.error) {
     return c.json({ error: response.fError }, 404);
   }
   return c.json(response);
 }
 
-export async function addOwner(c) {
+export async function addMenuItem(c) {
   const orderStatus = await c.req.json("");
-  const response = await serveOwner(orderStatus);
+  const response = await serveMenuItem(orderStatus);
   if (response.error) {
     return c.json({ message: response.message }, 404);
   } else {
@@ -39,32 +39,32 @@ export async function addOwner(c) {
   }
 }
 
-export async function updateOwner(c) {
+export async function updateMenuItem(c) {
   const id = c.req.param("id");
   const updateContent = await c.req.json("");
 
-  const response = await serveOwnerUpdate(id, updateContent);
+  const response = await serveMenuItemUpdate(id, updateContent);
 
   if (response.error) {
     return c.json({ message: response.message }, 404);
   }
   if (response.length === 0) {
     return c.json(
-      { message: "The restaurant owner does not exist. Create it first" },
+      { message: "The menu item does not exist. Create it first" },
       404
     );
   }
   return c.json(response);
 }
 
-export async function deleteOwner(c) {
+export async function deleteStatusOrder(c) {
   const id = c.req.param("id") as number;
-  const toBeDeleted = await deleteResOwner(id);
+  const toBeDeleted = await deleteOrderStatus(id);
   try {
     if (toBeDeleted.rowCount === 0) {
-      return c.json({ message: "Restaurant owner does not exist" }, 404);
+      return c.json({ message: "Menu item does not exist" }, 404);
     } else {
-      return c.json({ message: "Restaurant owner is deleted succesfully" });
+      return c.json({ message: "Menu item is deleted succesfully" });
     }
   } catch (error) {
     return c.json({ error: "Server error, try again later" }, 404);

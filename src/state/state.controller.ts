@@ -1,15 +1,15 @@
 import {
-  serveAllOwner,
-  serveOwner,
-  fetchOneOwner,
-  serveOwnerUpdate,
-  deleteResOwner,
-} from "./owner.service";
-import { restaurant_owner } from "../drizzle/schema";
+  serveAllState,
+  serveState,
+  fetchOneState,
+  serveStateUpdate,
+  deleteState,
+} from "./state.service.ts";
+import { state } from "../drizzle/schema";
 
-export async function getAllOwner(c) {
+export async function getAllState(c) {
   const { limit } = c.req.query() as number;
-  const status = await serveAllOwner(limit);
+  const status = await serveAllState(limit);
   try {
     if (status.length === 0) {
       return c.json({ message: "No registered restaurant owner" });
@@ -20,18 +20,18 @@ export async function getAllOwner(c) {
   }
 }
 
-export async function getOneOwner(c) {
+export async function getOneState(c) {
   const id = c.req.param("id") as number;
-  const response = await fetchOneOwner(id);
+  const response = await fetchOneState(id);
   if (response.error) {
     return c.json({ error: response.fError }, 404);
   }
   return c.json(response);
 }
 
-export async function addOwner(c) {
+export async function addState(c) {
   const orderStatus = await c.req.json("");
-  const response = await serveOwner(orderStatus);
+  const response = await serveState(orderStatus);
   if (response.error) {
     return c.json({ message: response.message }, 404);
   } else {
@@ -39,11 +39,11 @@ export async function addOwner(c) {
   }
 }
 
-export async function updateOwner(c) {
+export async function updateState(c) {
   const id = c.req.param("id");
   const updateContent = await c.req.json("");
 
-  const response = await serveOwnerUpdate(id, updateContent);
+  const response = await serveStateUpdate(id, updateContent);
 
   if (response.error) {
     return c.json({ message: response.message }, 404);
@@ -57,9 +57,9 @@ export async function updateOwner(c) {
   return c.json(response);
 }
 
-export async function deleteOwner(c) {
+export async function removeState(c) {
   const id = c.req.param("id") as number;
-  const toBeDeleted = await deleteResOwner(id);
+  const toBeDeleted = await deleteState(id);
   try {
     if (toBeDeleted.rowCount === 0) {
       return c.json({ message: "Restaurant owner does not exist" }, 404);
