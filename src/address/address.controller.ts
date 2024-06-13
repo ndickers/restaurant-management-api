@@ -1,69 +1,81 @@
 import {
   serveAllAddress,
-  serveAddress,
+  addAddress,
   fetchOneAddress,
   serveAddressUpdate,
   deleteAddress,
 } from "./address.service.ts";
 import { address } from "../drizzle/schema";
+import { Context } from "hono";
 
-export async function getAllAddress(c) {
-  const { limit } = c.req.query() as number;
-  const status = await serveAllAddress(limit);
+export async function getAllAddress(c: Context) {
+  const response = await serveAllAddress();
   try {
-    if (status.length === 0) {
+    if (response.length === 0) {
       return c.json({ message: "No registered address" }, 404);
+    } else {
+      return c.json(response);
     }
-    return c.json(status);
   } catch (error) {
-    return c.json({ message: "Server error, try again later" }, 404);
+    return c.json({ message: error });
   }
 }
 
-export async function getOneAddress(c) {
-  const id = c.req.param("id") as number;
+export async function getOneAddress(c: Address) {
+  const id: number = c.req.param("id");
   const response = await fetchOneAddress(id);
-  if (response.error) {
-    return c.json({ error: response.fError }, 404);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "Address not found. Add it first" });
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(response);
   }
-  return c.json(response);
 }
 
-export async function addAddress(c) {
-  const orderStatus = await c.req.json("");
-  const response = await serveAddress(orderStatus);
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
-  } else {
-    return c.json(response);
+export async function createAddress(c) {
+  const newDetails = await c.req.json("");
+  const response = await addAddress(newDetails);
+  try {
+    if (response.length !== 0) {
+      return c.json(response);
+    } else {
+      return c.json({ message: "Unable to create address" });
+    }
+  } catch (error) {
+    return c.json(error);
   }
 }
 
 export async function updateAddress(c) {
   const id = c.req.param("id");
   const updateContent = await c.req.json("");
-
   const response = await serveAddressUpdate(id, updateContent);
-
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
+  try {
+    if (response.length !== 0) {
+      return c.json({
+        message: "Address updated successfully",
+        content: response,
+      });
+    } else {
+      return c.json({ error: "No address in the database" });
+    }
+  } catch (error) {
+    return error;
   }
-  if (response.length === 0) {
-    return c.json({ message: "The address does not exist. Create it first" }, 404);
-  }
-  return c.json(response);
 }
 
 export async function removeAddress(c) {
   const id = c.req.param("id") as number;
-  const toBeDeleted = await deleteAddress(id);
+  const response = await deleteAddress(id);
   try {
-    if (toBeDeleted.rowCount === 0) {
-      return c.json({ message: "address does not exist" }, 404);
+    if (response) {
+      return c.json({ message: "address deleted successfully" });
     } else {
-      return c.json({ message: "address is deleted succesfully" });
+      return c.json({ message: "Unable to delete address" });
     }
   } catch (error) {
-    return c.json({ error: "Server error, try again later" }, 404);
+    return c.json(error, 404);
   }
 }

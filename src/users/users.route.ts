@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, Context } from "hono";
 import {
   getAllUsers,
   getOneUser,
@@ -6,7 +6,7 @@ import {
   updateWholeUser,
   deleteUser,
 } from "./users.controller";
-import { adminAuth, userAuth } from "../middleware/authorize";
+import { adminAuth, userAuth, authorizeAll } from "../middleware/authorize";
 import { appendTrailingSlash, trimTrailingSlash } from "hono/trailing-slash";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
@@ -25,11 +25,11 @@ userRoute.use(trimTrailingSlash());
 
 userRoute.get("/users", adminAuth, getAllUsers);
 
-userRoute.get("/users/:id", userAuth, getOneUser);
+userRoute.get("/users/:id", authorizeAll, getOneUser);
 
 userRoute.post(
-  "/users/add",
-  zValidator("json", inputUserData, (result, c) => {
+  "/users",
+  zValidator("json", inputUserData, (result, c: Context) => {
     console.log();
     if (!result.success) {
       const field = result.error.issues[0];
@@ -46,9 +46,10 @@ userRoute.post(
       }
     }
   }),
+  authorizeAll,
   addNewUser
 );
 
-userRoute.put("/users/update/:id", updateWholeUser);
+userRoute.patch("/users/:id", authorizeAll, updateWholeUser);
 
-userRoute.delete("/users/delete/:id", deleteUser);
+userRoute.delete("/users/:id", authorizeAll, deleteUser);

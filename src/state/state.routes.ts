@@ -10,6 +10,7 @@ import {
 
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
+import { adminAuth, authorizeAll } from "../middleware/authorize";
 
 export const stateRoutes = new Hono();
 
@@ -18,9 +19,9 @@ const inputState = z.object({
   code: z.number(),
 });
 
-stateRoutes.get("/states", getAllState);
+stateRoutes.get("/states", adminAuth, getAllState);
 
-stateRoutes.get("/states/:id", getOneState);
+stateRoutes.get("/states/:id", authorizeAll, getOneState);
 stateRoutes.post(
   "/states",
   zValidator("json", inputState, (result, c) => {
@@ -39,7 +40,8 @@ stateRoutes.post(
       }
     }
   }),
+  authorizeAll,
   addState
 );
-stateRoutes.patch("/states/:id", updateState);
-stateRoutes.delete("/states/:id", removeState);
+stateRoutes.patch("/states/:id", authorizeAll, updateState);
+stateRoutes.delete("/states/:id", authorizeAll, removeState);

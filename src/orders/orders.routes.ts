@@ -10,7 +10,7 @@ import {
 
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-
+import { adminAuth, authorizeAll } from "../middleware/authorize";
 export const ordersRoutes = new Hono();
 
 const inputOrder = z.object({
@@ -25,11 +25,11 @@ const inputOrder = z.object({
   final_price: z.number(),
 });
 
-ordersRoutes.get("/orders", getAllOrders);
+ordersRoutes.get("/orders", adminAuth, getAllOrders);
 
-ordersRoutes.get("/orders/:id", getOneOrder);
+ordersRoutes.get("/orders/:id", authorizeAll, getOneOrder);
 ordersRoutes.post(
-  "/orders/add",
+  "/orders",
   zValidator("json", inputOrder, (result, c) => {
     if (!result.success) {
       const postError = result.error.issues[0];
@@ -46,7 +46,8 @@ ordersRoutes.post(
       }
     }
   }),
+  authorizeAll,
   addOrder
 );
-ordersRoutes.patch("/orders/:id", updateOrder);
-ordersRoutes.delete("/orders/:id", removeOrder);
+ordersRoutes.patch("/orders/:id", authorizeAll, updateOrder);
+ordersRoutes.delete("/orders/:id", authorizeAll, removeOrder);

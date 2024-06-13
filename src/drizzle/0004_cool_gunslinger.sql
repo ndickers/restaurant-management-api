@@ -1,0 +1,1 @@
+ALTER TABLE "comment" ADD COLUMN "updated_at" timestamp DEFAULT now();

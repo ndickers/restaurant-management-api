@@ -26,7 +26,9 @@ export const users = pgTable("users", {
 
 export const auth = pgTable("auth", {
   id: serial("id"),
-  username: varchar("username").references(() => users.name),
+  username: varchar("username").references(() => users.name, {
+    onDelete: "cascade",
+  }),
   role: varchar("role"),
   password: varchar("passwordS"),
 });
@@ -49,7 +51,9 @@ export const usersRelation = relations(users, ({ many, one }) => ({
 
 export const restaurant_owner = pgTable("restaurant_owner", {
   id: serial("id").primaryKey(),
-  restaurant_id: integer("restaurant_id").references(() => restaurant.id),
+  restaurant_id: integer("restaurant_id").references(() => restaurant.id, {
+    onDelete: "cascade",
+  }),
   owner_id: integer("owner_id").references(() => users.id, {
     onDelete: "cascade",
   }),
@@ -106,14 +110,23 @@ export const restaurantRelations = relations(restaurant, ({ many, one }) => ({
 
 export const orders = pgTable("orders", {
   id: serial("id").primaryKey(),
-  restaurant_id: integer(" restaurant_id").references(() => restaurant.id),
+  restaurant_id: integer(" restaurant_id").references(() => restaurant.id, {
+    onDelete: "cascade",
+  }),
   estimated_delivery_time: date("estimated_delivery_time"),
   actual_delivery_time: date("actual_delivery_time"),
   delivery_address_id: integer("delivery_address_id").references(
-    () => address.id
+    () => address.id,
+    {
+      onDelete: "cascade",
+    }
   ),
-  user_id: integer("user_id").references(() => users.id),
-  driver_id: integer("driver_id").references(() => driver.id),
+  user_id: integer("user_id").references(() => users.id, {
+    onDelete: "cascade",
+  }),
+  driver_id: integer("driver_id").references(() => driver.id, {
+    onDelete: "cascade",
+  }),
   price: numeric("price"),
   discount: numeric("discount"),
   final_price: numeric("final_price"),
@@ -145,7 +158,9 @@ export const orderRelations = relations(orders, ({ one, many }) => {
 });
 export const order_status = pgTable("order_status", {
   id: serial("id").primaryKey(),
-  order_id: integer("order_id").references(() => orders.id),
+  order_id: integer("order_id").references(() => orders.id, {
+    onDelete: "cascade",
+  }),
   status_catalog_id: integer("status_catalog_id").references(
     () => status_catalog.id
   ),
@@ -173,8 +188,12 @@ export const statusCatalogRelations = relations(status_catalog, ({ many }) => ({
 
 export const order_menu_item = pgTable("order_menu_item", {
   id: serial("id").primaryKey(),
-  order_id: integer("order_id").references(() => orders.id),
-  menu_item_id: integer("menu_item_id").references(() => menu_item.id),
+  order_id: integer("order_id").references(() => orders.id, {
+    onDelete: "cascade",
+  }),
+  menu_item_id: integer("menu_item_id").references(() => menu_item.id, {
+    onDelete: "cascade",
+  }),
   quantity: integer("quantity"),
   item_price: numeric("item_price"),
   price: numeric("price"),
@@ -194,14 +213,18 @@ export const orderMenuRelations = relations(order_menu_item, ({ one }) => ({
 export const menu_item = pgTable("menu_item", {
   id: serial("id").primaryKey(),
   name: varchar("name"),
-  restaurant_id: integer("restaurant_id").references(() => restaurant.id),
-  category_id: integer("category_id").references(() => category.id),
+  restaurant_id: integer("restaurant_id").references(() => restaurant.id, {
+    onDelete: "cascade",
+  }),
+  category_id: integer("category_id").references(() => category.id, {
+    onDelete: "cascade",
+  }),
   description: varchar("description"),
   ingredients: varchar("ingredients"),
   price: numeric("price"),
   active: boolean("active"),
   created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
 });
 
 export const menuItemRelations = relations(menu_item, ({ many, one }) => ({
@@ -219,7 +242,9 @@ export const menuItemRelations = relations(menu_item, ({ many, one }) => ({
 export const city = pgTable("city", {
   id: serial("id").primaryKey(),
   name: varchar("name"),
-  state_id: integer("state_id").references(() => state.id),
+  state_id: integer("state_id").references(() => state.id, {
+    onDelete: "cascade",
+  }),
 });
 
 export const cityRelations = relations(city, ({ many, one }) => ({
@@ -234,7 +259,7 @@ export const cityRelations = relations(city, ({ many, one }) => ({
 export const state = pgTable("state", {
   id: serial("id").primaryKey(),
   name: varchar("name"),
-  code: varchar("state_id"),
+  code: varchar("code"),
 });
 
 export const stateRelation = relations(state, ({ many }) => ({
@@ -258,7 +283,7 @@ export const address = pgTable("address", {
   user_id: integer("user_id").references(() => users.id),
   city_id: integer("city_id").references(() => city.id),
   created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
 });
 export const addressRelations = relations(address, ({ one, many }) => ({
   users: one(users, {
@@ -275,7 +300,9 @@ export const addressRelations = relations(address, ({ one, many }) => ({
 export const comment = pgTable("comment", {
   id: serial("id").primaryKey(),
   user_id: integer("user_id"),
-  order_id: integer("order_id").references(() => orders.id),
+  order_id: integer("order_id").references(() => orders.id, {
+    onDelete: "cascade",
+  }),
   comment_text: varchar("comment_text"),
   is_complaint: boolean("is_complaint"),
   is_praise: boolean("is_praise"),
@@ -283,7 +310,7 @@ export const comment = pgTable("comment", {
   zip_code: varchar("zip_code"),
   delivery_instructions: varchar("delivery_instructions"),
   created_at: timestamp("created_at").defaultNow(),
-  updated_at: timestamp("created_at").defaultNow(),
+  updated_at: timestamp("updated_at").defaultNow(),
 });
 
 export const commentRelations = relations(comment, ({ one }) => ({
@@ -296,3 +323,18 @@ export const commentRelations = relations(comment, ({ one }) => ({
     references: [users.id],
   }),
 }));
+
+export type TIUser = typeof users.$inferInsert;
+export type TSUser = typeof users.$inferSelect;
+
+export type TIDriver = typeof driver.$inferInsert;
+export type TSDriver = typeof driver.$inferSelect;
+
+export type TIddress = typeof address.$inferInsert;
+export type TSaddress = typeof address.$inferSelect;
+
+export type TIOrder = typeof orders.$inferInsert;
+export type TSOrder = typeof orders.$inferSelect;
+
+export type TICategory = typeof category.$inferInsert;
+export type TSCategory = typeof category.$inferSelect;

@@ -8,13 +8,12 @@ import {
 import { comment } from "../drizzle/schema";
 
 export async function getAllComment(c) {
-  const { limit } = c.req.query() as number;
-  const status = await serveAllComment(limit);
+  const response = await serveAllComment();
   try {
-    if (status.length === 0) {
+    if (response.length === 0) {
       return c.json({ message: "No registered comment" });
     }
-    return c.json(status);
+    return c.json(response);
   } catch (error) {
     return c.json({ message: "Server error, try again later" }, 404);
   }
@@ -23,19 +22,27 @@ export async function getAllComment(c) {
 export async function getOneComment(c) {
   const id = c.req.param("id") as number;
   const response = await fetchOneComment(id);
-  if (response.error) {
-    return c.json({ error: response.fError }, 404);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "Comment is not found" }, 404);
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(error);
   }
-  return c.json(response);
 }
 
 export async function addComment(c) {
-  const orderStatus = await c.req.json("");
-  const response = await serveComment(orderStatus);
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
-  } else {
-    return c.json(response);
+  const commentText = await c.req.json("");
+  const response = await serveComment(commentText);
+  try {
+    if (response) {
+      return c.json({ message: "Comment added successfully" });
+    } else {
+      return c.json({ message: "Unable to add comment" });
+    }
+  } catch (error) {
+    return c.json(error);
   }
 }
 
@@ -45,28 +52,28 @@ export async function updateComment(c) {
 
   const response = await serveCommentUpdate(id, updateContent);
 
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
+  try {
+    if (response.length === 0) {
+      return c.json({
+        message: "You trying to update a comment that does not exist",
+      });
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(error);
   }
-  if (response.length === 0) {
-    return c.json(
-      { message: "The comment does not exist. Create it first" },
-      404
-    );
-  }
-  return c.json(response);
 }
 
 export async function removeComment(c) {
   const id = c.req.param("id") as number;
-  const toBeDeleted = await deleteComment(id);
+  const response = await deleteComment(id);
   try {
-    if (toBeDeleted.rowCount === 0) {
-      return c.json({ message: "Comment item does not exist" }, 404);
+    if (response.length !== 0) {
+      return c.json({ message: "Comment deleted successfully" });
     } else {
-      return c.json({ message: "Comment item is deleted succesfully" });
+      return c.json({ message: "You cannot delete non existing comment" });
     }
   } catch (error) {
-    return c.json({ error: "Server error, try again later" }, 404);
+    return c.json(error, 404);
   }
 }

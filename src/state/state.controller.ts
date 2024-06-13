@@ -9,33 +9,41 @@ import { state } from "../drizzle/schema";
 
 export async function getAllState(c) {
   const { limit } = c.req.query() as number;
-  const status = await serveAllState(limit);
+  const response = await serveAllState();
   try {
-    if (status.length === 0) {
-      return c.json({ message: "No registered restaurant owner" });
+    if (response.length === 0) {
+      return c.json({ message: "The is no state currently" });
     }
-    return c.json(status);
+    return c.json(response);
   } catch (error) {
-    return c.json({ message: "Server error, try again later" }, 404);
+    return c.json(error, 404);
   }
 }
 
 export async function getOneState(c) {
   const id = c.req.param("id") as number;
   const response = await fetchOneState(id);
-  if (response.error) {
-    return c.json({ error: response.fError }, 404);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "The state does not exist" }, 404);
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(error);
   }
-  return c.json(response);
 }
 
 export async function addState(c) {
-  const orderStatus = await c.req.json("");
-  const response = await serveState(orderStatus);
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
-  } else {
-    return c.json(response);
+  const newState = await c.req.json("");
+  const response = await serveState(newState);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "Unable to add state" }, 404);
+    } else {
+      return c.json(response);
+    }
+  } catch (error) {
+    return c.json(error);
   }
 }
 
@@ -45,28 +53,26 @@ export async function updateState(c) {
 
   const response = await serveStateUpdate(id, updateContent);
 
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "Unable to update the state" }, 404);
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(error);
   }
-  if (response.length === 0) {
-    return c.json(
-      { message: "The restaurant owner does not exist. Create it first" },
-      404
-    );
-  }
-  return c.json(response);
 }
 
 export async function removeState(c) {
   const id = c.req.param("id") as number;
-  const toBeDeleted = await deleteState(id);
+  const response = await deleteState(id);
   try {
-    if (toBeDeleted.rowCount === 0) {
-      return c.json({ message: "Restaurant owner does not exist" }, 404);
+    if (response.length === 0) {
+      return c.json({ message: "State does not exist" }, 404);
     } else {
-      return c.json({ message: "Restaurant owner is deleted succesfully" });
+      return c.json({ message: "State is deleted succesfully" });
     }
   } catch (error) {
-    return c.json({ error: "Server error, try again later" }, 404);
+    return c.json(error, 404);
   }
 }

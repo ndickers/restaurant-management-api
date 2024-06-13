@@ -12,18 +12,19 @@ import {
   updateOrderStatus,
   deleteStatusOrder,
 } from "./order_status.controller";
+import { adminAuth, authorizeAll } from "../middleware/authorize";
 export const orderStatusRoute = new Hono();
 
 const inputRestaurant = z.object({
   order_id: z.number(),
   status_catalog_id: z.number(),
 });
-orderStatusRoute.delete("/order-status/:id", deleteStatusOrder);
-orderStatusRoute.get("/order-status", getAllOrderStatus);
-orderStatusRoute.get("/order-status/:id", getOneOrderStatus);
-orderStatusRoute.patch("/order/:id", updateOrderStatus);
+orderStatusRoute.delete("/order-status/:id", authorizeAll, deleteStatusOrder);
+orderStatusRoute.get("/order-status", adminAuth, getAllOrderStatus);
+orderStatusRoute.get("/order-status/:id", authorizeAll, getOneOrderStatus);
+orderStatusRoute.patch("/order/:id", authorizeAll, updateOrderStatus);
 orderStatusRoute.post(
-  "/order_status",
+  "/order-status",
   zValidator("json", inputRestaurant, (result, c) => {
     if (!result.success) {
       const postError = result.error.issues[0];
@@ -40,5 +41,6 @@ orderStatusRoute.post(
       }
     }
   }),
+  authorizeAll,
   addOrderStatus
 );

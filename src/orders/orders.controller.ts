@@ -1,77 +1,76 @@
+import { Context } from "hono";
 import {
   serverAllOrders,
   createOrder,
-  fetchOneOrderStatus,
+  fetchOneOrder,
   serveOrderUpdate,
   deleteOrder,
 } from "./orders.service";
-export async function getAllOrders(c) {
-  const { limit } = c.req.query() as number;
-  const orders = await serverAllOrders(limit);
-
-  if (orders.error) {
-    return c.json({ error: orders.message }, 404);
-  }
+export async function getAllOrders(c: Context) {
+  const response = await serverAllOrders();
   try {
-    if (orders.length === 0) {
-      return c.json({ message: "You haven't made an order yet" });
+    if (response.length === 0) {
+      return c.json({ message: "Currently, there is no order" });
     }
-    return c.json(orders);
+    return c.json(response);
   } catch (error) {
-    return c.json({ message: "Server error, try again later" }, 404);
+    return c.json(error);
   }
 }
 
-export async function getOneOrder(c) {
+export async function getOneOrder(c: Context) {
   const id = c.req.param("id") as number;
   const response = await fetchOneOrder(id);
-  if (response.error) {
-    return c.json({ error: response.message }, 404);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "The order does not exist" });
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(error);
   }
-  return c.json(response);
 }
 
-export async function addOrder(c) {
+export async function addOrder(c: Context) {
   const orderDetails = await c.req.json("");
-  const addingOrder = await createOrder(orderDetails);
-  if (addingOrder.error) {
-    return c.json({ error: addingOrder.message }, 404);
-  } else {
+  const response = await createOrder(orderDetails);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "The order was not created" }, 404);
+    }
     return c.json({
-      message: "Order created succesfully",
-      orderCreated: addingOrder,
+      message: "Order was created successfully",
+      content: response,
     });
+  } catch (error) {
+    return c.json(error);
   }
-  return c.json("added succesfull");
 }
 
-export async function updateOrder(c) {
+export async function updateOrder(c: Context) {
   const id = c.req.param("id");
   const updateContent = await c.req.json("");
 
   const response = await serveOrderUpdate(id, updateContent);
-
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
-  }
-  if (response.length === 0) {
-    return c.json(
-      { message: "The order does not exist. Create it first" },
-      404
-    );
-  }
-  return c.json(response);
-}
-export async function removeOrder(c) {
-  const id = c.req.param("id") as number;
-  const toBeDeleted = await deleteOrder(id);
   try {
-    if (toBeDeleted.rowCount === 0) {
+    if (response.length === 0) {
+      return c.json({ message: "The order does not exist" }, 404);
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(error);
+  }
+}
+export async function removeOrder(c: Context) {
+  const id = c.req.param("id") as number;
+  const response = await deleteOrder(id);
+  try {
+    if (response.length === 0) {
       return c.json({ message: "Order does not exist" }, 404);
     } else {
       return c.json({ message: "Order is deleted succesfully" });
     }
   } catch (error) {
-    return c.json({ error: "Server error, try again later" }, 404);
+    return c.json(error, 404);
   }
 }

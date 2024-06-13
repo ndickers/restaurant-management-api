@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-
+import { adminAuth, authorizeAll } from "../middleware/authorize";
 import {
   getAllComment,
   addComment,
@@ -9,6 +9,7 @@ import {
   updateComment,
   deleteComment,
 } from "./comment.controller.ts";
+
 export const commentRoute = new Hono();
 
 const inputComment = z.object({
@@ -22,10 +23,10 @@ const inputComment = z.object({
   zip_code: z.string(),
   delivery_instructions: z.string(),
 });
-commentRoute.delete("/comments/:id", deleteComment);
-commentRoute.get("/comments", getAllComment);
-commentRoute.get("/comments/:id", getOneComment);
-commentRoute.patch("/comments/:id", updateComment);
+commentRoute.delete("/comments/:id", adminAuth, deleteComment);
+commentRoute.get("/comments", authorizeAll, getAllComment);
+commentRoute.get("/comments/:id", authorizeAll, getOneComment);
+commentRoute.patch("/comments/:id", authorizeAll, updateComment);
 commentRoute.post(
   "/comments",
   zValidator("json", inputComment, (result, c) => {
@@ -44,5 +45,6 @@ commentRoute.post(
       }
     }
   }),
+  authorizeAll,
   addComment
 );

@@ -7,17 +7,31 @@ import {
   addStatusCatalog,
   getOneStatusCatalog,
   updateStatusCatalog,
-  deleteCatalogStatus
+  deleteCatalogStatus,
 } from "./status_cat.controller.ts";
+import { adminAuth, authorizeAll } from "../middleware/authorize";
+
 export const statusCatalogRoute = new Hono();
 
 const inputStatusCatalog = z.object({
   name: z.string(),
 });
-statusCatalogRoute.delete("/status-catalog/:id", deleteCatalogStatus);
-statusCatalogRoute.get("/status-catalog", getAllStatusCatalog);
-statusCatalogRoute.get("/status-catalog/:id", getOneStatusCatalog);
-statusCatalogRoute.patch("/status-catalog/:id", updateStatusCatalog);
+statusCatalogRoute.delete(
+  "/status-catalog/:id",
+  authorizeAll,
+  deleteCatalogStatus
+);
+statusCatalogRoute.get("/status-catalog", adminAuth, getAllStatusCatalog);
+statusCatalogRoute.get(
+  "/status-catalog/:id",
+  authorizeAll,
+  getOneStatusCatalog
+);
+statusCatalogRoute.patch(
+  "/status-catalog/:id",
+  authorizeAll,
+  updateStatusCatalog
+);
 statusCatalogRoute.post(
   "/status-catalog",
   zValidator("json", inputStatusCatalog, (result, c) => {
@@ -36,5 +50,6 @@ statusCatalogRoute.post(
       }
     }
   }),
+  authorizeAll,
   addStatusCatalog
 );

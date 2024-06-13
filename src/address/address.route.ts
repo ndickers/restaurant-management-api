@@ -2,12 +2,12 @@ import { Hono } from "hono";
 
 import {
   getOneAddress,
-  addAddress,
+  createAddress,
   getAllAddress,
   updateAddress,
   removeAddress,
 } from "./address.controller.ts";
-
+import { adminAuth, userAuth, authorizeAll } from "../middleware/authorize";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
@@ -22,9 +22,9 @@ const inputAddress = z.object({
   city_id: z.number(),
 });
 
-addressRoutes.get("/address", getAllAddress);
+addressRoutes.get("/address", adminAuth, getAllAddress);
 
-addressRoutes.get("/address/:id", getOneAddress);
+addressRoutes.get("/address/:id", authorizeAll, getOneAddress);
 addressRoutes.post(
   "/address",
   zValidator("json", inputAddress, (result, c) => {
@@ -43,7 +43,8 @@ addressRoutes.post(
       }
     }
   }),
-  addAddress
+  authorizeAll,
+  createAddress
 );
-addressRoutes.patch("/address/:id", updateAddress);
-addressRoutes.delete("/address/:id", removeAddress);
+addressRoutes.patch("/address/:id", authorizeAll, updateAddress);
+addressRoutes.delete("/address/:id", authorizeAll, removeAddress);

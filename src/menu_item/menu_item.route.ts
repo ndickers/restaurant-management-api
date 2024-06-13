@@ -9,6 +9,7 @@ import {
   updateMenuItem,
   removeMenuItem,
 } from "./menu_item.controller.ts";
+import { adminAuth, authorizeAll } from "../middleware/authorize";
 export const menuItemRoute = new Hono();
 
 const inputMenuItem = z.object({
@@ -20,10 +21,10 @@ const inputMenuItem = z.object({
   price: z.number(),
   active: z.boolean(),
 });
-menuItemRoute.delete("/menu-items/:id", removeMenuItem);
-menuItemRoute.get("/menu-items", getAllMenuItem);
-menuItemRoute.get("/menu-items/:id", getOneMenuItem);
-menuItemRoute.patch("/menu-items/:id", updateMenuItem);
+menuItemRoute.delete("/menu-items/:id", authorizeAll, removeMenuItem);
+menuItemRoute.get("/menu-items", adminAuth, getAllMenuItem);
+menuItemRoute.get("/menu-items/:id", authorizeAll, getOneMenuItem);
+menuItemRoute.patch("/menu-items/:id", authorizeAll, updateMenuItem);
 menuItemRoute.post(
   "/menu-item",
   zValidator("json", inputMenuItem, (result, c) => {
@@ -42,5 +43,6 @@ menuItemRoute.post(
       }
     }
   }),
+  authorizeAll,
   addMenuItem
 );

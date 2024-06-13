@@ -9,6 +9,7 @@ import {
   updateOrderMenu,
   removeOrderMenu,
 } from "./order_menu.controller.ts";
+import { adminAuth, authorizeAll } from "../middleware/authorize";
 export const orderMenuRoute = new Hono();
 
 const inputOrderMenu = z.object({
@@ -19,10 +20,10 @@ const inputOrderMenu = z.object({
   price: z.number(),
   comment: z.string(),
 });
-orderMenuRoute.delete("/order-menu/:id", removeOrderMenu);
-orderMenuRoute.get("/order-menu", getAllOrderMenu);
-orderMenuRoute.get("/order-menu/:id", getOneOrderMenu);
-orderMenuRoute.patch("/order-menu/:id", updateOrderMenu);
+orderMenuRoute.delete("/order-menu/:id", authorizeAll, removeOrderMenu);
+orderMenuRoute.get("/order-menu", adminAuth, getAllOrderMenu);
+orderMenuRoute.get("/order-menu/:id", authorizeAll, getOneOrderMenu);
+orderMenuRoute.patch("/order-menu/:id", authorizeAll, updateOrderMenu);
 orderMenuRoute.post(
   "/order-menu",
   zValidator("json", inputOrderMenu, (result, c) => {
@@ -41,5 +42,6 @@ orderMenuRoute.post(
       }
     }
   }),
+  authorizeAll,
   addOrderMenu
 );

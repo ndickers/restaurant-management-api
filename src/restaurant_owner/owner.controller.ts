@@ -9,33 +9,42 @@ import { restaurant_owner } from "../drizzle/schema";
 
 export async function getAllOwner(c) {
   const { limit } = c.req.query() as number;
-  const status = await serveAllOwner(limit);
+  const response = await serveAllOwner(limit);
   try {
-    if (status.length === 0) {
-      return c.json({ message: "No registered restaurant owner" });
+    if (response.length === 0) {
+      return c.json({
+        message: "Currently there is no registered restaurant owner",
+      });
     }
-    return c.json(status);
+    return c.json(response);
   } catch (error) {
-    return c.json({ message: "Server error, try again later" }, 404);
+    return c.json(error, 404);
   }
 }
 
 export async function getOneOwner(c) {
   const id = c.req.param("id") as number;
   const response = await fetchOneOwner(id);
-  if (response.error) {
-    return c.json({ error: response.fError }, 404);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "The owner does not exist" }, 404);
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(error);
   }
-  return c.json(response);
 }
 
 export async function addOwner(c) {
-  const orderStatus = await c.req.json("");
-  const response = await serveOwner(orderStatus);
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
-  } else {
+  const newOwner = await c.req.json("");
+  const response = await serveOwner(newOwner);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "Unable to create new owner" }, 404);
+    }
     return c.json(response);
+  } catch (error) {
+    return c.json(error);
   }
 }
 
@@ -44,29 +53,26 @@ export async function updateOwner(c) {
   const updateContent = await c.req.json("");
 
   const response = await serveOwnerUpdate(id, updateContent);
-
-  if (response.error) {
-    return c.json({ message: response.message }, 404);
+  try {
+    if (response.length === 0) {
+      return c.json({ message: "Unable to update restaurant owner" }, 404);
+    }
+    return c.json(response);
+  } catch (error) {
+    return c.json(error);
   }
-  if (response.length === 0) {
-    return c.json(
-      { message: "The restaurant owner does not exist. Create it first" },
-      404
-    );
-  }
-  return c.json(response);
 }
 
 export async function deleteOwner(c) {
   const id = c.req.param("id") as number;
-  const toBeDeleted = await deleteResOwner(id);
+  const response = await deleteResOwner(id);
   try {
-    if (toBeDeleted.rowCount === 0) {
+    if (response.length === 0) {
       return c.json({ message: "Restaurant owner does not exist" }, 404);
     } else {
       return c.json({ message: "Restaurant owner is deleted succesfully" });
     }
   } catch (error) {
-    return c.json({ error: "Server error, try again later" }, 404);
+    return c.json(error, 404);
   }
 }

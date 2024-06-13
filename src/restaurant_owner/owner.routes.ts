@@ -9,16 +9,18 @@ import {
   updateOwner,
   deleteOwner,
 } from "./owner.controller.ts";
+import { adminAuth, authorizeAll } from "../middleware/authorize";
+
 export const ownersRoutes = new Hono();
 
 const ownerDetails = z.object({
   restaurant_id: z.number(),
   owner_id: z.number(),
 });
-ownersRoutes.delete("/owners/:id", deleteOwner);
-ownersRoutes.get("/owners", getAllOwner);
-ownersRoutes.get("/owners/:id", getOneOwner);
-ownersRoutes.patch("/owners/:id", updateOwner);
+ownersRoutes.delete("/owners/:id", authorizeAll, deleteOwner);
+ownersRoutes.get("/owners", adminAuth, getAllOwner);
+ownersRoutes.get("/owners/:id", authorizeAll, getOneOwner);
+ownersRoutes.patch("/owners/:id", authorizeAll, updateOwner);
 ownersRoutes.post(
   "/owners",
   zValidator("json", ownerDetails, (result, c) => {
@@ -37,5 +39,6 @@ ownersRoutes.post(
       }
     }
   }),
+  authorizeAll,
   addOwner
 );

@@ -7,7 +7,7 @@ import {
   updateCity,
   removeCity,
 } from "./city.controller";
-
+import { adminAuth, authorizeAll } from "../middleware/authorize";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
@@ -19,9 +19,9 @@ const inputCity = z.object({
   state_id: z.number(),
 });
 
-cityRoutes.get("/city", getAllCity);
+cityRoutes.get("/city", adminAuth, getAllCity);
 
-cityRoutes.get("/city/:id", getOneCity);
+cityRoutes.get("/city/:id", authorizeAll, getOneCity);
 cityRoutes.post(
   "/city",
   zValidator("json", inputCity, (result, c) => {
@@ -40,7 +40,8 @@ cityRoutes.post(
       }
     }
   }),
+  authorizeAll,
   addCity
 );
-cityRoutes.patch("/city/:id", updateCity);
-cityRoutes.delete("/city/:id", removeCity);
+cityRoutes.patch("/city/:id", authorizeAll, updateCity);
+cityRoutes.delete("/city/:id", authorizeAll, removeCity);

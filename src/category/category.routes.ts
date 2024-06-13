@@ -7,7 +7,7 @@ import {
   updateCategory,
   removeCategory,
 } from "./category.controller";
-
+import { adminAuth, userAuth, authorizeAll } from "../middleware/authorize";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
 
@@ -17,9 +17,9 @@ const inputCategory = z.object({
   name: z.string(),
 });
 
-categoryRoutes.get("/category", getAllCategory);
+categoryRoutes.get("/category", adminAuth, getAllCategory);
 
-categoryRoutes.get("/category/:id", getOneCategory);
+categoryRoutes.get("/category/:id", authorizeAll, getOneCategory);
 categoryRoutes.post(
   "/category",
   zValidator("json", inputCategory, (result, c) => {
@@ -38,7 +38,8 @@ categoryRoutes.post(
       }
     }
   }),
+  authorizeAll,
   addCategory
 );
-categoryRoutes.patch("/category/:id", updateCategory);
-categoryRoutes.delete("/category/:id", removeCategory);
+categoryRoutes.patch("/category/:id", authorizeAll, updateCategory);
+categoryRoutes.delete("/category/:id", authorizeAll, removeCategory);

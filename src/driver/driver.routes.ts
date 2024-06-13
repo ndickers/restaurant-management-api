@@ -8,7 +8,7 @@ import {
 } from "./driver.controller";
 import { zValidator } from "@hono/zod-validator";
 import { z } from "zod";
-
+import { adminAuth, authorizeAll } from "../middleware/authorize";
 export const driverRoute = new Hono();
 
 const inputDriver = z.object({
@@ -20,27 +20,31 @@ const inputDriver = z.object({
   delivering: z.boolean(),
 });
 
-driverRoute.get("/drivers", getDrivers);
+driverRoute.get("/drivers", adminAuth, getDrivers);
 
 driverRoute.post(
-  "/post/driver",
+  "/drivers",
   zValidator("json", inputDriver, (result, c) => {
     if (!result.success) {
       const postError = result.error.issues[0];
       const { path, message, expected } = postError;
       if (message === "Required") {
-        return c.json({ Error: `Field of ${path[0]} is missing` },404);
+        return c.json({ Error: `Field of ${path[0]} is missing` }, 404);
       } else {
-        return c.json({
-          Error: `Field of ${path[0]} only allow data of type ${expected}`,
-        },404);
+        return c.json(
+          {
+            Error: `Field of ${path[0]} only allow data of type ${expected}`,
+          },
+          404
+        );
       }
     }
   }),
+  authorizeAll,
   postDriver
 );
-driverRoute.get("/driver/:id", getOneDriver);
+driverRoute.get("/drivers/:id", authorizeAll, getOneDriver);
 
-driverRoute.patch("/update/driver/:id", updateDriver);
+driverRoute.patch("/drivers/:id", authorizeAll, updateDriver);
 
-driverRoute.delete("/driver/remove/:id", removeDriver);
+driverRoute.delete("/drivers/:id", authorizeAll, removeDriver);
