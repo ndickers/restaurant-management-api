@@ -4,7 +4,7 @@ async function migration() {
     try {
         console.log("======Migration Started ======");
         await migrate(db, {
-            migrationsFolder: __dirname + "/migrations"
+            migrationsFolder: __dirname + "/migrations",
         });
         console.log("======Migration Ended======");
         process.exit(0);
@@ -18,6 +18,3 @@ migration().catch((e) => {
     console.error("Unexpected error during migration:", e);
     process.exit(1);
 });
-has;
-context;
-menu;
