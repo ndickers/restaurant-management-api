@@ -26,9 +26,10 @@ export const users = pgTable("users", {
 
 export const auth = pgTable("auth", {
   id: serial("id"),
-  username: varchar("username").references(() => users.name, {
+  user_id: integer("user_id").references(() => users.id, {
     onDelete: "cascade",
   }),
+  username: varchar("username"),
   role: varchar("role"),
   password: varchar("passwordS"),
 });

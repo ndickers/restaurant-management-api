@@ -1,1 +1,0 @@
-ALTER TABLE "menu_item" ADD COLUMN "updated_at" timestamp DEFAULT now();

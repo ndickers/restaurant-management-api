@@ -1,6 +1,6 @@
 {
-  "id": "793d41a4-5990-4d44-b27a-f56d004f0004",
-  "prevId": "d43e74e9-c9a4-41b5-850b-ed177edd5e3f",
+  "id": "14c681b7-09d1-4e82-aa6c-3f6d514c6cad",
+  "prevId": "9c4c4db0-e1bc-48bb-985d-c74872dfce81",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -56,6 +56,13 @@
           "primaryKey": false,
           "notNull": false,
           "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
         }
       },
       "indexes": {},
@@ -100,6 +107,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "username": {
           "name": "username",
           "type": "varchar",
@@ -121,15 +134,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "auth_username_users_name_fk": {
-          "name": "auth_username_users_name_fk",
+        "auth_user_id_users_id_fk": {
+          "name": "auth_user_id_users_id_fk",
           "tableFrom": "auth",
           "tableTo": "users",
           "columnsFrom": [
-            "username"
+            "user_id"
           ],
           "columnsTo": [
-            "name"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -262,6 +275,13 @@
         },
         "created_at": {
           "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
@@ -407,6 +427,13 @@
         },
         "created_at": {
           "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
@@ -834,8 +861,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "state_id": {
-          "name": "state_id",
+        "code": {
+          "name": "code",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false

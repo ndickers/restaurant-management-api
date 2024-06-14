@@ -5,43 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1718274124281,
-      "tag": "0000_silly_colleen_wing",
+      "when": 1718363237001,
+      "tag": "0000_flowery_banshee",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1718274347164,
-      "tag": "0001_glorious_beast",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1718275353673,
-      "tag": "0002_lumpy_texas_twister",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1718281212218,
-      "tag": "0003_flawless_roulette",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1718290350325,
-      "tag": "0004_cool_gunslinger",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1718293489904,
-      "tag": "0005_cheerful_zeigeist",
+      "when": 1718363560148,
+      "tag": "0001_fuzzy_nitro",
       "breakpoints": true
     }
   ]

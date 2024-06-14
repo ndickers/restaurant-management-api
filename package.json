@@ -1,10 +1,12 @@
 {
+  
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
     "start": "node ./dist/index.js",
+  
     "gen": "drizzle-kit generate",
-    "push": "drizzle-kit push",
+    "push": "drizzle-kit generate && drizzle-kit migrate",
     "studio": "drizzle-kit studio"
   },
   "dependencies": {

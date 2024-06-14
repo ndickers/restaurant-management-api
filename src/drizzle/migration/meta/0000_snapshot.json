@@ -1,6 +1,6 @@
 {
-  "id": "14277bdb-724b-4c6a-82f4-c94550f02813",
-  "prevId": "50bed6fc-f9cc-4b0f-9dd8-d0965a38413e",
+  "id": "25952407-5e5a-408a-b6b3-94c26af2fc1d",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -107,6 +107,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "user_id": {
+          "name": "user_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "username": {
           "name": "username",
           "type": "varchar",
@@ -128,15 +134,15 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "auth_username_users_name_fk": {
-          "name": "auth_username_users_name_fk",
+        "auth_user_id_users_id_fk": {
+          "name": "auth_user_id_users_id_fk",
           "tableFrom": "auth",
           "tableTo": "users",
           "columnsFrom": [
-            "username"
+            "user_id"
           ],
           "columnsTo": [
-            "name"
+            "id"
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
@@ -421,6 +427,13 @@
         },
         "created_at": {
           "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
           "notNull": false,
