@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteCatalogStatus = exports.updateStatusCatalog = exports.addStatusCatalog = exports.getOneStatusCatalog = exports.getAllStatusCatalog = void 0;
-const status_cat_service_1 = require("./status_cat.service");
-async function getAllStatusCatalog(c) {
-    const response = await (0, status_cat_service_1.serveAllStatusCatalog)();
+import { serveAllStatusCatalog, serveStatusCatalog, fetchOneStatusCatalog, serveStatusCatalogUpdate, deleteStatusCatalog, } from "./status_cat.service";
+export async function getAllStatusCatalog(c) {
+    const response = await serveAllStatusCatalog();
     try {
         if (response.length === 0) {
             return c.json({ message: "No status catalog currently" });
@@ -14,10 +11,9 @@ async function getAllStatusCatalog(c) {
         return c.json({ message: error });
     }
 }
-exports.getAllStatusCatalog = getAllStatusCatalog;
-async function getOneStatusCatalog(c) {
+export async function getOneStatusCatalog(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, status_cat_service_1.fetchOneStatusCatalog)(id);
+    const response = await fetchOneStatusCatalog(id);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Status catalog does not exists" });
@@ -28,10 +24,9 @@ async function getOneStatusCatalog(c) {
         return c.json({ message: error });
     }
 }
-exports.getOneStatusCatalog = getOneStatusCatalog;
-async function addStatusCatalog(c) {
+export async function addStatusCatalog(c) {
     const newCatalog = await c.req.json();
-    const response = await (0, status_cat_service_1.serveStatusCatalog)(newCatalog);
+    const response = await serveStatusCatalog(newCatalog);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Status catalogue cannot be added" }, 404);
@@ -42,11 +37,10 @@ async function addStatusCatalog(c) {
         return c.json({ message: error });
     }
 }
-exports.addStatusCatalog = addStatusCatalog;
-async function updateStatusCatalog(c) {
+export async function updateStatusCatalog(c) {
     const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
-    const response = await (0, status_cat_service_1.serveStatusCatalogUpdate)(id, updateContent);
+    const response = await serveStatusCatalogUpdate(id, updateContent);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Status catalogue did not update" }, 404);
@@ -57,10 +51,9 @@ async function updateStatusCatalog(c) {
         return c.json({ message: error });
     }
 }
-exports.updateStatusCatalog = updateStatusCatalog;
-async function deleteCatalogStatus(c) {
+export async function deleteCatalogStatus(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, status_cat_service_1.deleteStatusCatalog)(id);
+    const response = await deleteStatusCatalog(id);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Status catalog does not exist" }, 404);
@@ -73,4 +66,3 @@ async function deleteCatalogStatus(c) {
         return c.json({ message: error });
     }
 }
-exports.deleteCatalogStatus = deleteCatalogStatus;

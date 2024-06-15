@@ -1,30 +1,27 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.menuItemRoute = void 0;
-const hono_1 = require("hono");
-const zod_validator_1 = require("@hono/zod-validator");
-const zod_1 = require("zod");
-const menu_item_controller_1 = require("./menu_item.controller");
-const authorize_1 = require("../middleware/authorize");
-exports.menuItemRoute = new hono_1.Hono();
-const inputMenuItem = zod_1.z.object({
-    name: zod_1.z.string(),
-    restaurant_id: zod_1.z.number(),
-    category_id: zod_1.z.number(),
-    description: zod_1.z.string(),
-    ingredients: zod_1.z.string(),
-    price: zod_1.z.number(),
-    active: zod_1.z.boolean(),
+import { Hono } from "hono";
+import { zValidator } from "@hono/zod-validator";
+import { z } from "zod";
+import { getAllMenuItem, addMenuItem, getOneMenuItem, updateMenuItem, removeMenuItem, } from "./menu_item.controller";
+import { adminAuth, authorizeAll } from "../middleware/authorize";
+export const menuItemRoute = new Hono();
+const inputMenuItem = z.object({
+    name: z.string(),
+    restaurant_id: z.number(),
+    category_id: z.number(),
+    description: z.string(),
+    ingredients: z.string(),
+    price: z.number(),
+    active: z.boolean(),
 });
-exports.menuItemRoute.delete("/menu-items/:id", authorize_1.authorizeAll, menu_item_controller_1.removeMenuItem);
-exports.menuItemRoute.get("/menu-items", authorize_1.adminAuth, menu_item_controller_1.getAllMenuItem);
-exports.menuItemRoute.get("/menu-items/:id", authorize_1.authorizeAll, menu_item_controller_1.getOneMenuItem);
-exports.menuItemRoute.patch("/menu-items/:id", authorize_1.authorizeAll, menu_item_controller_1.updateMenuItem);
-exports.menuItemRoute.post("/menu-item", (0, zod_validator_1.zValidator)("json", inputMenuItem, (result, c) => {
+menuItemRoute.delete("/menu-items/:id", authorizeAll, removeMenuItem);
+menuItemRoute.get("/menu-items", adminAuth, getAllMenuItem);
+menuItemRoute.get("/menu-items/:id", authorizeAll, getOneMenuItem);
+menuItemRoute.patch("/menu-items/:id", authorizeAll, updateMenuItem);
+menuItemRoute.post("/menu-item", zValidator("json", inputMenuItem, (result, c) => {
     if (result.success) {
         return c.json({ message: "Succesfully added" });
     }
     else {
         return c.json({ message: "Confirm your data types" });
     }
-}), authorize_1.authorizeAll, menu_item_controller_1.addMenuItem);
+}), authorizeAll, addMenuItem);

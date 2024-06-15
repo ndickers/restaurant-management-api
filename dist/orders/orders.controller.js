@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeOrder = exports.updateOrder = exports.addOrder = exports.getOneOrder = exports.getAllOrders = void 0;
-const orders_service_1 = require("./orders.service");
-async function getAllOrders(c) {
-    const response = await (0, orders_service_1.serverAllOrders)();
+import { serverAllOrders, createOrder, fetchOneOrder, serveOrderUpdate, deleteOrder, } from "./orders.service";
+export async function getAllOrders(c) {
+    const response = await serverAllOrders();
     try {
         if (response === null) {
             return c.json({ message: "Currently, there is no order" });
@@ -14,10 +11,9 @@ async function getAllOrders(c) {
         return c.json({ message: error });
     }
 }
-exports.getAllOrders = getAllOrders;
-async function getOneOrder(c) {
+export async function getOneOrder(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, orders_service_1.fetchOneOrder)(id);
+    const response = await fetchOneOrder(id);
     try {
         if (response === null) {
             return c.json({ message: "The order does not exist" });
@@ -28,10 +24,9 @@ async function getOneOrder(c) {
         return c.json({ message: error });
     }
 }
-exports.getOneOrder = getOneOrder;
-async function addOrder(c) {
+export async function addOrder(c) {
     const orderDetails = await c.req.json();
-    const response = await (0, orders_service_1.createOrder)(orderDetails);
+    const response = await createOrder(orderDetails);
     try {
         if (response === null) {
             return c.json({ message: "The order was not created" }, 404);
@@ -45,11 +40,10 @@ async function addOrder(c) {
         return c.json({ message: error });
     }
 }
-exports.addOrder = addOrder;
-async function updateOrder(c) {
+export async function updateOrder(c) {
     const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
-    const response = await (0, orders_service_1.serveOrderUpdate)(id, updateContent);
+    const response = await serveOrderUpdate(id, updateContent);
     try {
         if (response === null) {
             return c.json({ message: "The order does not exist" }, 404);
@@ -60,10 +54,9 @@ async function updateOrder(c) {
         return c.json({ message: error });
     }
 }
-exports.updateOrder = updateOrder;
-async function removeOrder(c) {
+export async function removeOrder(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, orders_service_1.deleteOrder)(id);
+    const response = await deleteOrder(id);
     try {
         if (response === null) {
             return c.json({ message: "Order does not exist" }, 404);
@@ -76,4 +69,3 @@ async function removeOrder(c) {
         return c.json({ message: error });
     }
 }
-exports.removeOrder = removeOrder;

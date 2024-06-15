@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOwner = exports.updateOwner = exports.addOwner = exports.getOneOwner = exports.getAllOwner = void 0;
-const owner_service_1 = require("./owner.service");
-async function getAllOwner(c) {
-    const response = await (0, owner_service_1.serveAllOwner)();
+import { serveAllOwner, serveOwner, fetchOneOwner, serveOwnerUpdate, deleteResOwner, } from "./owner.service";
+export async function getAllOwner(c) {
+    const response = await serveAllOwner();
     try {
         if (response === null) {
             return c.json({
@@ -16,10 +13,9 @@ async function getAllOwner(c) {
         return c.json({ message: error });
     }
 }
-exports.getAllOwner = getAllOwner;
-async function getOneOwner(c) {
+export async function getOneOwner(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, owner_service_1.fetchOneOwner)(id);
+    const response = await fetchOneOwner(id);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "The owner does not exist" }, 404);
@@ -30,10 +26,9 @@ async function getOneOwner(c) {
         return c.json({ message: error });
     }
 }
-exports.getOneOwner = getOneOwner;
-async function addOwner(c) {
+export async function addOwner(c) {
     const newOwner = await c.req.json();
-    const response = await (0, owner_service_1.serveOwner)(newOwner);
+    const response = await serveOwner(newOwner);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Unable to create new owner" }, 404);
@@ -44,11 +39,10 @@ async function addOwner(c) {
         return c.json({ message: error });
     }
 }
-exports.addOwner = addOwner;
-async function updateOwner(c) {
+export async function updateOwner(c) {
     const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
-    const response = await (0, owner_service_1.serveOwnerUpdate)(id, updateContent);
+    const response = await serveOwnerUpdate(id, updateContent);
     try {
         if (response === null) {
             return c.json({ message: "Unable to update restaurant owner" }, 404);
@@ -59,10 +53,9 @@ async function updateOwner(c) {
         return c.json({ message: error });
     }
 }
-exports.updateOwner = updateOwner;
-async function deleteOwner(c) {
+export async function deleteOwner(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, owner_service_1.deleteResOwner)(id);
+    const response = await deleteResOwner(id);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Restaurant owner does not exist" }, 404);
@@ -75,4 +68,3 @@ async function deleteOwner(c) {
         return c.json({ message: error });
     }
 }
-exports.deleteOwner = deleteOwner;

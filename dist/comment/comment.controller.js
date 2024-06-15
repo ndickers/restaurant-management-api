@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeComment = exports.updateComment = exports.addComment = exports.getOneComment = exports.getAllComment = void 0;
-const comment_service_1 = require("./comment.service");
-async function getAllComment(c) {
-    const response = await (0, comment_service_1.serveAllComment)();
+import { serveAllComment, serveComment, fetchOneComment, serveCommentUpdate, deleteComment, } from "./comment.service";
+export async function getAllComment(c) {
+    const response = await serveAllComment();
     try {
         if (response === null) {
             return c.json({ message: "No registered comment" });
@@ -14,10 +11,9 @@ async function getAllComment(c) {
         return c.json({ message: "Server error, try again later" }, 404);
     }
 }
-exports.getAllComment = getAllComment;
-async function getOneComment(c) {
+export async function getOneComment(c) {
     const id = c.req.param("id");
-    const response = await (0, comment_service_1.fetchOneComment)(id);
+    const response = await fetchOneComment(id);
     try {
         if (response === null) {
             return c.json({ message: "Comment is not found" }, 404);
@@ -28,10 +24,9 @@ async function getOneComment(c) {
         return c.json(error);
     }
 }
-exports.getOneComment = getOneComment;
-async function addComment(c) {
+export async function addComment(c) {
     const commentText = await c.req.json();
-    const response = await (0, comment_service_1.serveComment)(commentText);
+    const response = await serveComment(commentText);
     try {
         if (response) {
             return c.json({ message: "Comment added successfully" });
@@ -44,11 +39,10 @@ async function addComment(c) {
         return c.json(error);
     }
 }
-exports.addComment = addComment;
-async function updateComment(c) {
+export async function updateComment(c) {
     const id = c.req.param("id");
     const updateContent = await c.req.json("");
-    const response = await (0, comment_service_1.serveCommentUpdate)(id, updateContent);
+    const response = await serveCommentUpdate(id, updateContent);
     try {
         if (response === null) {
             return c.json({
@@ -61,10 +55,9 @@ async function updateComment(c) {
         return c.json(error);
     }
 }
-exports.updateComment = updateComment;
-async function removeComment(c) {
+export async function removeComment(c) {
     const id = c.req.param("id");
-    const response = await (0, comment_service_1.deleteComment)(id);
+    const response = await deleteComment(id);
     try {
         if (response !== null) {
             return c.json({ message: "Comment deleted successfully" });
@@ -77,4 +70,3 @@ async function removeComment(c) {
         return c.json(error, 404);
     }
 }
-exports.removeComment = removeComment;

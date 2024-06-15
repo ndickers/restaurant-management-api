@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeCategory = exports.updateCategory = exports.addCategory = exports.getOneCategory = exports.getAllCategory = void 0;
-const category_service_1 = require("./category.service");
-async function getAllCategory(c) {
-    const response = await (0, category_service_1.serveAllCategory)();
+import { serveAllCategory, serveCategory, fetchOneCategory, serveCategoryUpdate, deleteCategory, } from "./category.service";
+export async function getAllCategory(c) {
+    const response = await serveAllCategory();
     try {
         if (response === null) {
             return c.json({ message: "No category found" });
@@ -14,10 +11,9 @@ async function getAllCategory(c) {
         return c.json({ message: error });
     }
 }
-exports.getAllCategory = getAllCategory;
-async function getOneCategory(c) {
+export async function getOneCategory(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, category_service_1.fetchOneCategory)(id);
+    const response = await fetchOneCategory(id);
     try {
         if (response === null) {
             return c.json({ message: "No category found" });
@@ -28,10 +24,9 @@ async function getOneCategory(c) {
         return c.json({ message: error });
     }
 }
-exports.getOneCategory = getOneCategory;
-async function addCategory(c) {
+export async function addCategory(c) {
     const newDetails = await c.req.json();
-    const response = await (0, category_service_1.serveCategory)(newDetails);
+    const response = await serveCategory(newDetails);
     try {
         if (response) {
             return c.json({
@@ -47,11 +42,10 @@ async function addCategory(c) {
         return c.json({ message: error });
     }
 }
-exports.addCategory = addCategory;
-async function updateCategory(c) {
+export async function updateCategory(c) {
     const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
-    const response = await (0, category_service_1.serveCategoryUpdate)(id, updateContent);
+    const response = await serveCategoryUpdate(id, updateContent);
     try {
         if (response === null) {
             return c.json({
@@ -67,10 +61,9 @@ async function updateCategory(c) {
         return c.json({ message: error });
     }
 }
-exports.updateCategory = updateCategory;
-async function removeCategory(c) {
+export async function removeCategory(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, category_service_1.deleteCategory)(id);
+    const response = await deleteCategory(id);
     try {
         if (response !== null) {
             return c.json({ message: "Category deleted successfully" });
@@ -83,4 +76,3 @@ async function removeCategory(c) {
         return c.json(error, 404);
     }
 }
-exports.removeCategory = removeCategory;

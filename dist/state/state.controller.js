@@ -1,9 +1,6 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeState = exports.updateState = exports.addState = exports.getOneState = exports.getAllState = void 0;
-const state_service_1 = require("./state.service");
-async function getAllState(c) {
-    const response = await (0, state_service_1.serveAllState)();
+import { serveAllState, serveState, fetchOneState, serveStateUpdate, deleteState, } from "./state.service";
+export async function getAllState(c) {
+    const response = await serveAllState();
     try {
         if (response.length === 0) {
             return c.json({ message: "The is no state currently" });
@@ -14,10 +11,9 @@ async function getAllState(c) {
         return c.json({ message: error });
     }
 }
-exports.getAllState = getAllState;
-async function getOneState(c) {
+export async function getOneState(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, state_service_1.fetchOneState)(id);
+    const response = await fetchOneState(id);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "The state does not exist" }, 404);
@@ -28,10 +24,9 @@ async function getOneState(c) {
         return c.json({ message: error });
     }
 }
-exports.getOneState = getOneState;
-async function addState(c) {
+export async function addState(c) {
     const newState = await c.req.json();
-    const response = await (0, state_service_1.serveState)(newState);
+    const response = await serveState(newState);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Unable to add state" }, 404);
@@ -44,11 +39,10 @@ async function addState(c) {
         return c.json({ message: error });
     }
 }
-exports.addState = addState;
-async function updateState(c) {
+export async function updateState(c) {
     const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
-    const response = await (0, state_service_1.serveStateUpdate)(id, updateContent);
+    const response = await serveStateUpdate(id, updateContent);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Unable to update the state" }, 404);
@@ -59,10 +53,9 @@ async function updateState(c) {
         return c.json({ message: error });
     }
 }
-exports.updateState = updateState;
-async function removeState(c) {
+export async function removeState(c) {
     const id = Number(c.req.param("id"));
-    const response = await (0, state_service_1.deleteState)(id);
+    const response = await deleteState(id);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "State does not exist" }, 404);
@@ -75,4 +68,3 @@ async function removeState(c) {
         return c.json({ message: error });
     }
 }
-exports.removeState = removeState;

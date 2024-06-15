@@ -1,43 +1,32 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrderStatus = exports.serveOrderStatusUpdate = exports.serveOrderStatus = exports.fetchOneOrderStatus = exports.serveAllOrderStatus = void 0;
-const db_1 = __importDefault(require("../drizzle/db"));
-const drizzle_orm_1 = require("drizzle-orm");
-const schema_1 = require("../drizzle/schema");
-async function serveAllOrderStatus() {
-    return await db_1.default.query.order_status.findMany({
+import db from "../drizzle/db";
+import { eq } from "drizzle-orm";
+import { order_status } from "../drizzle/schema";
+export async function serveAllOrderStatus() {
+    return await db.query.order_status.findMany({
         with: {
             status_catalogue: true,
             orders: true,
         },
     });
 }
-exports.serveAllOrderStatus = serveAllOrderStatus;
-async function fetchOneOrderStatus(id) {
-    return await db_1.default.query.order_status.findMany({
-        where: (0, drizzle_orm_1.eq)(schema_1.order_status.id, id),
+export async function fetchOneOrderStatus(id) {
+    return await db.query.order_status.findMany({
+        where: eq(order_status.id, id),
         with: {
             status_catalogue: true,
             orders: true,
         },
     });
 }
-exports.fetchOneOrderStatus = fetchOneOrderStatus;
-async function serveOrderStatus(orderStatus) {
-    return await db_1.default.insert(schema_1.order_status).values(orderStatus);
+export async function serveOrderStatus(orderStatus) {
+    return await db.insert(order_status).values(orderStatus);
 }
-exports.serveOrderStatus = serveOrderStatus;
-async function serveOrderStatusUpdate(id, updates) {
-    return await db_1.default
-        .update(schema_1.order_status)
+export async function serveOrderStatusUpdate(id, updates) {
+    return await db
+        .update(order_status)
         .set(updates)
-        .where((0, drizzle_orm_1.eq)(schema_1.order_status.id, id));
+        .where(eq(order_status.id, id));
 }
-exports.serveOrderStatusUpdate = serveOrderStatusUpdate;
-async function deleteOrderStatus(id) {
-    return await db_1.default.delete(schema_1.order_status).where((0, drizzle_orm_1.eq)(schema_1.order_status.id, id));
+export async function deleteOrderStatus(id) {
+    return await db.delete(order_status).where(eq(order_status.id, id));
 }
-exports.deleteOrderStatus = deleteOrderStatus;
