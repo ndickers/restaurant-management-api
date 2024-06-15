@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { comment } from "../drizzle/schema";
+import { comment } from '../drizzle/schema';
 export async function serveAllComment() {
     return await db.query.comment.findMany({
         with: {

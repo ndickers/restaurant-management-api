@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { order_menu_item } from "../drizzle/schema";
+import { order_menu_item } from '../drizzle/schema';
 export async function serveAllOrderMenu() {
     return await db.query.order_menu_item.findMany({
         with: {

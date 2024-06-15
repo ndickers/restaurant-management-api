@@ -6,8 +6,9 @@ import {
   deleteComment,
 } from "./comment.service";
 import { comment } from "../drizzle/schema";
+import { Context } from "hono";
 
-export async function getAllComment(c) {
+export async function getAllComment(c: Context) {
   const response = await serveAllComment();
   try {
     if (response === null) {
@@ -19,8 +20,8 @@ export async function getAllComment(c) {
   }
 }
 
-export async function getOneComment(c) {
-  const id = c.req.param("id") as number;
+export async function getOneComment(c: Context) {
+  const id = Number(c.req.param("id"));
   const response = await fetchOneComment(id);
   try {
     if (response === null) {
@@ -32,7 +33,7 @@ export async function getOneComment(c) {
   }
 }
 
-export async function addComment(c) {
+export async function addComment(c: Context) {
   const commentText = await c.req.json();
   const response = await serveComment(commentText);
   try {
@@ -46,9 +47,9 @@ export async function addComment(c) {
   }
 }
 
-export async function updateComment(c) {
-  const id = c.req.param("id");
-  const updateContent = await c.req.json("");
+export async function updateComment(c: Context) {
+  const id = Number(c.req.param("id"));
+  const updateContent = await c.req.json();
 
   const response = await serveCommentUpdate(id, updateContent);
 
@@ -64,8 +65,8 @@ export async function updateComment(c) {
   }
 }
 
-export async function removeComment(c) {
-  const id = c.req.param("id") as number;
+export async function removeComment(c: Context) {
+  const id = Number(c.req.param("id"));
   const response = await deleteComment(id);
   try {
     if (response !== null) {

@@ -12,7 +12,7 @@ export async function getAllRestaurant(c) {
     }
 }
 export async function getResturant(c) {
-    const id = c.req.param("id");
+    const id = Number(c.req.param("id"));
     const response = await fetchOneRest(id);
     try {
         if (response === null) {
@@ -40,8 +40,8 @@ export async function postResturant(c) {
     }
 }
 export async function updateResturant(c) {
-    const id = c.req.param("id");
-    const updateContent = await c.req.json("");
+    const id = Number(c.req.param("id"));
+    const updateContent = await c.req.json();
     const response = await serveUpdate(id, updateContent);
     try {
         if (response === null) {
@@ -54,7 +54,7 @@ export async function updateResturant(c) {
     }
 }
 export async function removeResturant(c) {
-    const id = c.req.param("id");
+    const id = Number(c.req.param("id"));
     const response = await deleteRest(id);
     try {
         if (response === null) {

@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { comment } from "../drizzle/schema";
+import { comment, TIComment } from '../drizzle/schema';
 
 export async function serveAllComment() {
   return await db.query.comment.findMany({
@@ -11,7 +11,7 @@ export async function serveAllComment() {
   });
 }
 
-export async function fetchOneComment(id) {
+export async function fetchOneComment(id:number) {
   return await db.query.comment.findMany({
     where: eq(comment.id, id),
     with: {
@@ -21,14 +21,14 @@ export async function fetchOneComment(id) {
   });
 }
 
-export async function serveComment(orderStatus) {
+export async function serveComment(orderStatus:TIComment) {
   return await db.insert(comment).values(orderStatus);
 }
 
-export async function serveCommentUpdate(id, updates) {
+export async function serveCommentUpdate(id:number, updates:TIComment) {
   return await db.update(comment).set(updates).where(eq(comment.id, id));
 }
 
-export async function deleteComment(id) {
+export async function deleteComment(id:number) {
   return await db.delete(comment).where(eq(comment.id, id));
 }

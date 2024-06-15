@@ -43,7 +43,7 @@ export async function addOrderMenu(c) {
     }
 }
 export async function updateOrderMenu(c) {
-    const id = c.req.param("id");
+    const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
     const response = await serveOrderMenuUpdate(id, updateContent);
     try {

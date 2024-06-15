@@ -12,7 +12,7 @@ export async function getAllComment(c) {
     }
 }
 export async function getOneComment(c) {
-    const id = c.req.param("id");
+    const id = Number(c.req.param("id"));
     const response = await fetchOneComment(id);
     try {
         if (response === null) {
@@ -40,8 +40,8 @@ export async function addComment(c) {
     }
 }
 export async function updateComment(c) {
-    const id = c.req.param("id");
-    const updateContent = await c.req.json("");
+    const id = Number(c.req.param("id"));
+    const updateContent = await c.req.json();
     const response = await serveCommentUpdate(id, updateContent);
     try {
         if (response === null) {
@@ -56,7 +56,7 @@ export async function updateComment(c) {
     }
 }
 export async function removeComment(c) {
-    const id = c.req.param("id");
+    const id = Number(c.req.param("id"));
     const response = await deleteComment(id);
     try {
         if (response !== null) {

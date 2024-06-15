@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { restaurant } from "../drizzle/schema";
+import { restaurant } from '../drizzle/schema';
 export async function serveAllRest() {
     return await db.query.restaurant.findMany({
         with: {

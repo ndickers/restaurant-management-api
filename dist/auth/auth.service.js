@@ -1,9 +1,9 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { auth } from "../drizzle/schema";
+import { auth } from '../drizzle/schema';
 export async function confirmUserName(uName) {
     const checkUsername = await db.query.auth.findMany({
-        where: eq(auth.username, uName),
+        where: eq(auth.username, uName.username),
     });
     return checkUsername;
 }

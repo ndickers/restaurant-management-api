@@ -10,7 +10,7 @@ export async function serveAllCategory(): Promise<TSCategory[] | null> {
   });
 }
 
-export async function fetchOneCategory(id): Promise<TSCategory[]> {
+export async function fetchOneCategory(id:number): Promise<TSCategory[]> {
   return await db.query.category.findMany({
     where: eq(category.id, id),
     with: {
@@ -23,7 +23,7 @@ export async function serveCategory(newVal:TICategory) {
   return await db.insert(category).values(newVal);
 }
 
-export async function serveCategoryUpdate(id, updates) {
+export async function serveCategoryUpdate(id:number, updates:TICategory) {
   return await db
     .update(category)
     .set(updates)
@@ -33,6 +33,6 @@ export async function serveCategoryUpdate(id, updates) {
     });
 }
 
-export async function deleteCategory(id) {
+export async function deleteCategory(id:number) {
   return await db.delete(category).where(eq(category.id, id));
 }

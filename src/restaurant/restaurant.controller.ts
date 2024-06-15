@@ -1,3 +1,4 @@
+import { Context } from "hono";
 import {
   serveAllRest,
   fetchOneRest,
@@ -6,7 +7,7 @@ import {
   deleteRest,
 } from "./restaurant.service";
 
-export async function getAllRestaurant(c) {
+export async function getAllRestaurant(c: Context) {
   const response = await serveAllRest();
   try {
     if (response.length === 0) {
@@ -18,8 +19,8 @@ export async function getAllRestaurant(c) {
   }
 }
 
-export async function getResturant(c) {
-  const id = c.req.param("id") as number;
+export async function getResturant(c: Context) {
+  const id = Number(c.req.param("id"));
   const response = await fetchOneRest(id);
   try {
     if (response === null) {
@@ -31,7 +32,7 @@ export async function getResturant(c) {
   }
 }
 
-export async function postResturant(c) {
+export async function postResturant(c: Context) {
   const restDetail = await c.req.json();
 
   const response = await addRest(restDetail);
@@ -50,9 +51,9 @@ export async function postResturant(c) {
   }
 }
 
-export async function updateResturant(c) {
-  const id = c.req.param("id");
-  const updateContent = await c.req.json("");
+export async function updateResturant(c: Context) {
+  const id = Number(c.req.param("id"));
+  const updateContent = await c.req.json();
 
   const response = await serveUpdate(id, updateContent);
 
@@ -65,8 +66,8 @@ export async function updateResturant(c) {
     return c.json(error);
   }
 }
-export async function removeResturant(c) {
-  const id = c.req.param("id") as number;
+export async function removeResturant(c: Context) {
+  const id = Number(c.req.param("id"));
   const response = await deleteRest(id);
   try {
     if (response === null) {

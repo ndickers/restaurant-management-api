@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { status_catalog } from "../drizzle/schema";
+import { status_catalog } from '../drizzle/schema';
 export async function serveAllStatusCatalog() {
     return await db.query.status_catalog.findMany({
         with: {

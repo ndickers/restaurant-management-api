@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { orders } from "../drizzle/schema";
+import { orders } from '../drizzle/schema';
 export async function serverAllOrders() {
     return await db.query.orders.findMany({
         with: {

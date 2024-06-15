@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { orders, TSOrder } from "../drizzle/schema";
+import { orders, TSOrder, TIOrder } from '../drizzle/schema';
 export async function serverAllOrders(): Promise<TSOrder[] | null> {
   return await db.query.orders.findMany({
     with: {
@@ -13,7 +13,7 @@ export async function serverAllOrders(): Promise<TSOrder[] | null> {
   });
 }
 
-export async function createOrder(orderDetail){
+export async function createOrder(orderDetail:TIOrder){
   return await db.insert(orders).values(orderDetail);
 }
 
@@ -30,7 +30,7 @@ export async function fetchOneOrder(id: number) {
   });
 }
 
-export async function serveOrderUpdate(id, updates) {
+export async function serveOrderUpdate(id:number, updates:TIOrder) {
   return await db
     .update(orders)
     .set(updates)
@@ -38,6 +38,6 @@ export async function serveOrderUpdate(id, updates) {
    
 }
 
-export async function deleteOrder(id) {
+export async function deleteOrder(id:number) {
   return await db.delete(orders).where(eq(orders.id, id));
 }

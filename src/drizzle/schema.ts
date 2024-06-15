@@ -325,6 +325,18 @@ export const commentRelations = relations(comment, ({ one }) => ({
   }),
 }));
 
+export type TIRestaurant = typeof restaurant.$inferInsert;
+export type TSRestaurant = typeof restaurant.$inferSelect;
+
+export type TIStatusCat = typeof status_catalog.$inferInsert;
+export type TSStatusCat = typeof status_catalog.$inferSelect;
+
+export type TIOwner = typeof restaurant_owner.$inferInsert;
+export type TSOwner = typeof restaurant_owner.$inferSelect;
+
+export type TIState = typeof state.$inferInsert;
+export type TSState = typeof state.$inferSelect;
+
 export type TIUser = typeof users.$inferInsert;
 export type TSUser = typeof users.$inferSelect;
 
@@ -351,3 +363,9 @@ export type TSMenuItem = typeof menu_item.$inferSelect;
 
 export type TICity = typeof city.$inferInsert;
 export type TSCity = typeof city.$inferSelect;
+
+export type TIComment = typeof comment.$inferInsert;
+export type TSComment = typeof comment.$inferSelect;
+
+export type TIOrderMenu = typeof order_menu_item.$inferInsert;
+export type TSOrderMenu = typeof order_menu_item.$inferSelect;

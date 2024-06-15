@@ -8,7 +8,7 @@ import {
 import { city, stateRelation } from "../drizzle/schema";
 import { Context } from 'hono';
 
-export async function getAllCity(c) {
+export async function getAllCity(c:Context) {
   const response = await serveAllCity();
   try {
     if (response === null) {
@@ -20,7 +20,7 @@ export async function getAllCity(c) {
   }
 }
 
-export async function getOneCity(c) {
+export async function getOneCity(c:Context) {
   const id = Number(c.req.param("id"));
   const response = await fetchOneCity(id);
   try {
@@ -34,7 +34,7 @@ export async function getOneCity(c) {
   }
 }
 
-export async function addCity(c) {
+export async function addCity(c:Context) {
   const newDetails = await c.req.json();
   const response = await serveCity(newDetails);
   try {
@@ -48,7 +48,7 @@ export async function addCity(c) {
   }
 }
 
-export async function updateCity(c) {
+export async function updateCity(c:Context) {
   const id = Number(c.req.param("id"));
   const updateContent = await c.req.json();
 
@@ -66,7 +66,7 @@ export async function updateCity(c) {
   }
 }
 
-export async function removeCity(c) {
+export async function removeCity(c:Context) {
   const id = Number(c.req.param("id"));
   const response = await deleteCity(id);
   try {

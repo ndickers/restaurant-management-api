@@ -6,8 +6,9 @@ import {
   deleteOrderStatus,
 } from "./order_status.service";
 import { order_status } from "../drizzle/schema";
+import { Context } from "hono";
 
-export async function getAllOrderStatus(c) {
+export async function getAllOrderStatus(c: Context) {
   const response = await serveAllOrderStatus();
   try {
     if (response === null) {
@@ -19,8 +20,8 @@ export async function getAllOrderStatus(c) {
   }
 }
 
-export async function getOneOrderStatus(c) {
-  const id = c.req.param("id") as number;
+export async function getOneOrderStatus(c: Context) {
+  const id = Number(c.req.param("id"));
   const response = await fetchOneOrderStatus(id);
   try {
     if (response === null) {
@@ -32,8 +33,8 @@ export async function getOneOrderStatus(c) {
   }
 }
 
-export async function addOrderStatus(c) {
-  const orderStatus = await c.req.json("");
+export async function addOrderStatus(c: Context) {
+  const orderStatus = await c.req.json();
   const response = await serveOrderStatus(orderStatus);
   if (response === null) {
     return c.json({ message: "adding order status declined" }, 404);
@@ -41,8 +42,8 @@ export async function addOrderStatus(c) {
   return c.json({ message: "Order status was successfully created", response });
 }
 
-export async function updateOrderStatus(c) {
-  const id = c.req.param("id");
+export async function updateOrderStatus(c: Context) {
+  const id = Number(c.req.param("id"));
   const updateContent = await c.req.json();
 
   const response = await serveOrderStatusUpdate(id, updateContent);
@@ -56,8 +57,8 @@ export async function updateOrderStatus(c) {
   }
 }
 
-export async function deleteStatusOrder(c) {
-  const id = c.req.param("id") as number;
+export async function deleteStatusOrder(c: Context) {
+  const id = Number(c.req.param("id"));
   const response = await deleteOrderStatus(id);
   try {
     if (response === null) {

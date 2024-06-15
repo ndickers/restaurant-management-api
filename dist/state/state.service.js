@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { state } from "../drizzle/schema";
+import { state } from '../drizzle/schema';
 export async function serveAllState() {
     return await db.query.state.findMany({
         with: {
