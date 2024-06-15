@@ -13,7 +13,7 @@ importers:
         version: 1.11.3
       '@hono/zod-validator':
         specifier: ^0.2.2
-        version: 0.2.2(hono@4.4.6)(zod@3.24.0-canary.20240523T174819)
+        version: 0.2.2(hono@4.4.6)(zod@3.23.8)
       '@neondatabase/serverless':
         specifier: ^0.9.3
         version: 0.9.3
@@ -39,8 +39,8 @@ importers:
         specifier: ^8.12.0
         version: 8.12.0
       zod:
-        specifier: 3.24.0-canary.20240523T174819
-        version: 3.24.0-canary.20240523T174819
+        specifier: 3.23.8
+        version: 3.23.8
     devDependencies:
       '@types/bcrypt':
         specifier: ^5.0.2
@@ -1012,8 +1012,8 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  zod@3.24.0-canary.20240523T174819:
-    resolution: {integrity: sha512-yRmms4cxDboI6CMHnY9DJRTPTAh5+RmYTpONAhZN3/0AK3AhJrkyjFFEMEyEK3Z+JWRBz3s728sw95Qnqegy2Q==}
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
 
@@ -1233,10 +1233,10 @@ snapshots:
 
   '@hono/node-server@1.11.3': {}
 
-  '@hono/zod-validator@0.2.2(hono@4.4.6)(zod@3.24.0-canary.20240523T174819)':
+  '@hono/zod-validator@0.2.2(hono@4.4.6)(zod@3.23.8)':
     dependencies:
       hono: 4.4.6
-      zod: 3.24.0-canary.20240523T174819
+      zod: 3.23.8
 
   '@mapbox/node-pre-gyp@1.0.11':
     dependencies:
@@ -1738,4 +1738,4 @@ snapshots:
 
   yallist@4.0.0: {}
 
-  zod@3.24.0-canary.20240523T174819: {}
+  zod@3.23.8: {}
