@@ -1,5 +1,6 @@
 import "dotenv/config";
 import jwt from "jsonwebtoken";
+import { JwtPayload } from "jsonwebtoken";
 import { Context } from "hono";
 
 export async function authorize(c: Context, next, userRole: string) {
@@ -8,7 +9,10 @@ export async function authorize(c: Context, next, userRole: string) {
     return c.json({ message: "You're unauthorized" }, 401);
   }
   try {
-    const { role } = (await jwt.verify(token, process.env.SECRET)) as string;
+    const { role } = (await jwt.verify(
+      token,
+      process.env.SECRET as string
+    )) as JwtPayload;
 
     if (userRole === "both") {
       await next();
