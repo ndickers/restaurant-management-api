@@ -1,27 +1,25 @@
-import { Hono } from "hono";
-import { getOneCategory, addCategory, getAllCategory, updateCategory, removeCategory, } from "./category.controller";
-import { adminAuth, authorizeAll } from "../middleware/authorize";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-export const categoryRoutes = new Hono();
-const inputCategory = z.object({
-    name: z.string(),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.categoryRoutes = void 0;
+// @ts-ignore
+const hono_1 = require("hono");
+const category_controller_1 = require("./category.controller");
+const authorize_1 = require("../middleware/authorize");
+const zod_validator_1 = require("@hono/zod-validator");
+const zod_1 = require("zod");
+exports.categoryRoutes = new hono_1.Hono();
+const inputCategory = zod_1.z.object({
+    name: zod_1.z.string(),
 });
-categoryRoutes.get("/category", adminAuth, getAllCategory);
-categoryRoutes.get("/category/:id", authorizeAll, getOneCategory);
-categoryRoutes.post("/category", zValidator("json", inputCategory, (result, c) => {
-    if (!result.success) {
-        const postError = result.error.issues[0];
-        const { path, message, expected } = postError;
-        if (message === "Required") {
-            return c.json({ Error: `Field of ${path[0]} is missing` }, 404);
-        }
-        else {
-            return c.json({
-                Error: `Field of ${path[0]} only allow data of type ${expected}`,
-            }, 404);
-        }
+exports.categoryRoutes.get("/category", authorize_1.adminAuth, category_controller_1.getAllCategory);
+exports.categoryRoutes.get("/category/:id", authorize_1.authorizeAll, category_controller_1.getOneCategory);
+exports.categoryRoutes.post("/category", (0, zod_validator_1.zValidator)("json", inputCategory, (result, c) => {
+    if (result.success) {
+        return c.json({ message: "Succesfully added" });
     }
-}), authorizeAll, addCategory);
-categoryRoutes.patch("/category/:id", authorizeAll, updateCategory);
-categoryRoutes.delete("/category/:id", authorizeAll, removeCategory);
+    else {
+        return c.json({ message: "Confirm your data types" });
+    }
+}), authorize_1.authorizeAll, category_controller_1.addCategory);
+exports.categoryRoutes.patch("/category/:id", authorize_1.authorizeAll, category_controller_1.updateCategory);
+exports.categoryRoutes.delete("/category/:id", authorize_1.authorizeAll, category_controller_1.removeCategory);

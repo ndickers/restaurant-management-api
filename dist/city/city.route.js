@@ -1,29 +1,26 @@
-import { Hono } from "hono";
-import { getOneCity, addCity, getAllCity, updateCity, removeCity, } from "./city.controller";
-import { adminAuth, authorizeAll } from "../middleware/authorize";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-export const cityRoutes = new Hono();
-const inputCity = z.object({
-    name: z.string(),
-    code: z.number(),
-    state_id: z.number(),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.cityRoutes = void 0;
+const hono_1 = require("hono");
+const city_controller_1 = require("./city.controller");
+const authorize_1 = require("../middleware/authorize");
+const zod_validator_1 = require("@hono/zod-validator");
+const zod_1 = require("zod");
+exports.cityRoutes = new hono_1.Hono();
+const inputCity = zod_1.z.object({
+    name: zod_1.z.string(),
+    code: zod_1.z.number(),
+    state_id: zod_1.z.number(),
 });
-cityRoutes.get("/city", adminAuth, getAllCity);
-cityRoutes.get("/city/:id", authorizeAll, getOneCity);
-cityRoutes.post("/city", zValidator("json", inputCity, (result, c) => {
-    if (!result.success) {
-        const postError = result.error.issues[0];
-        const { path, message, expected } = postError;
-        if (message === "Required") {
-            return c.json({ Error: `Field of ${path[0]} is missing` }, 404);
-        }
-        else {
-            return c.json({
-                Error: `Field of ${path[0]} only allow data of type ${expected}`,
-            }, 404);
-        }
+exports.cityRoutes.get("/city", authorize_1.adminAuth, city_controller_1.getAllCity);
+exports.cityRoutes.get("/city/:id", authorize_1.authorizeAll, city_controller_1.getOneCity);
+exports.cityRoutes.post("/city", (0, zod_validator_1.zValidator)("json", inputCity, (result, c) => {
+    if (result.success) {
+        return c.json({ message: "Succesfully added" });
     }
-}), authorizeAll, addCity);
-cityRoutes.patch("/city/:id", authorizeAll, updateCity);
-cityRoutes.delete("/city/:id", authorizeAll, removeCity);
+    else {
+        return c.json({ message: "Confirm your data types" });
+    }
+}), authorize_1.authorizeAll, city_controller_1.addCity);
+exports.cityRoutes.patch("/city/:id", authorize_1.authorizeAll, city_controller_1.updateCity);
+exports.cityRoutes.delete("/city/:id", authorize_1.authorizeAll, city_controller_1.removeCity);

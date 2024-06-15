@@ -13,11 +13,11 @@ export async function serverAllOrders(): Promise<TSOrder[] | null> {
   });
 }
 
-export async function createOrder(orderDetail): Promise<TSOrder> {
-  return await db.insert(orders).values(orderDetail).returning(orders);
+export async function createOrder(orderDetail){
+  return await db.insert(orders).values(orderDetail);
 }
 
-export async function fetchOneOrder(id: number): Promise<TSOrder | null> {
+export async function fetchOneOrder(id: number) {
   return await db.query.orders.findMany({
     where: eq(orders.id, id),
     with: {
@@ -35,9 +35,7 @@ export async function serveOrderUpdate(id, updates) {
     .update(orders)
     .set(updates)
     .where(eq(orders.id, id))
-    .returning({
-      content: orders,
-    });
+   
 }
 
 export async function deleteOrder(id) {

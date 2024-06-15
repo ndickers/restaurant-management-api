@@ -4,10 +4,11 @@ import {
   fetchOneMenuItem,
   serveMenuItemUpdate,
   deleteMenuItem,
-} from "./menu_item.service.ts";
+} from "./menu_item.service";
 import { order_status } from "../drizzle/schema";
+import { Context } from "hono";
 
-export async function getAllMenuItem(c) {
+export async function getAllMenuItem(c: Context) {
   const response = await serveAllMenuItem();
   try {
     if (response.length === 0) {
@@ -15,25 +16,25 @@ export async function getAllMenuItem(c) {
     }
     return c.json(response);
   } catch (error) {
-    return c.json(error, 404);
+    return c.json({ message: error });
   }
 }
 
-export async function getOneMenuItem(c) {
-  const id = c.req.param("id") as number;
+export async function getOneMenuItem(c: Context) {
+  const id = Number(c.req.param("id"));
   const response = await fetchOneMenuItem(id);
   try {
-    if (response.length === 0) {
+    if (Object.keys(response).length === 0) {
       return c.json({ message: "The list menu does not exist" });
     }
     return c.json(response);
   } catch (error) {
-    return c.json(error);
+    return c.json({ message: error });
   }
 }
 
-export async function addMenuItem(c) {
-  const newItemMenu = await c.req.json("");
+export async function addMenuItem(c: Context) {
+  const newItemMenu = await c.req.json();
   const response = await serveMenuItem(newItemMenu);
   try {
     if (response) {
@@ -45,18 +46,18 @@ export async function addMenuItem(c) {
       return c.json({ message: "List item was not successfully added" });
     }
   } catch (error) {
-    return c.json(error);
+    return c.json({ message: error });
   }
 }
 
-export async function updateMenuItem(c) {
-  const id = c.req.param("id");
-  const updateContent = await c.req.json("");
+export async function updateMenuItem(c: Context) {
+  const id = Number(c.req.param("id"));
+  const updateContent = await c.req.json();
 
   const response = await serveMenuItemUpdate(id, updateContent);
 
   try {
-    if (response.length === 0) {
+    if (Object.keys(response).length === 0) {
       return c.json(
         { message: "You cannot update non existsing menu item" },
         404
@@ -64,20 +65,20 @@ export async function updateMenuItem(c) {
     }
     return c.json(response);
   } catch (error) {
-    return c.json(error);
+    return c.json({ message: error });
   }
 }
 
-export async function deleteStatusOrder(c) {
-  const id = c.req.param("id") as number;
-  const response = await deleteOrderStatus(id);
+export async function removeMenuItem(c: Context) {
+  const id = Number(c.req.param("id"));
+  const response = await deleteMenuItem(id);
   try {
-    if (response.length !== 0) {
+    if (Object.keys(response).length !== 0) {
       return c.json({ message: "Menu item does not exist" }, 404);
     } else {
       return c.json({ message: "Menu item is deleted succesfully" });
     }
   } catch (error) {
-    return c.json(error, 404);
+    return c.json({ message: error });
   }
 }

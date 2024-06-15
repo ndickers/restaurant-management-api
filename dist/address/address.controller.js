@@ -1,8 +1,11 @@
-import { serveAllAddress, addAddress, fetchOneAddress, serveAddressUpdate, deleteAddress, } from "./address.service.ts";
-export async function getAllAddress(c) {
-    const response = await serveAllAddress();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.removeAddress = exports.updateAddress = exports.createAddress = exports.getOneAddress = exports.getAllAddress = void 0;
+const address_service_1 = require("./address.service");
+async function getAllAddress(c) {
+    const response = await (0, address_service_1.serveAllAddress)();
     try {
-        if (response.length === 0) {
+        if (response === null) {
             return c.json({ message: "No registered address" }, 404);
         }
         else {
@@ -13,24 +16,26 @@ export async function getAllAddress(c) {
         return c.json({ message: error });
     }
 }
-export async function getOneAddress(c) {
-    const id = c.req.param("id");
-    const response = await fetchOneAddress(id);
+exports.getAllAddress = getAllAddress;
+async function getOneAddress(c) {
+    const id = Number(c.req.param("id"));
+    const response = await (0, address_service_1.fetchOneAddress)(id);
     try {
-        if (response.length === 0) {
+        if (response === null) {
             return c.json({ message: "Address not found. Add it first" });
         }
         return c.json(response);
     }
     catch (error) {
-        return c.json(response);
+        return c.json({ message: error });
     }
 }
-export async function createAddress(c) {
-    const newDetails = await c.req.json("");
-    const response = await addAddress(newDetails);
+exports.getOneAddress = getOneAddress;
+async function createAddress(c) {
+    const newDetails = await c.req.json();
+    const response = await (0, address_service_1.addAddress)(newDetails);
     try {
-        if (response.length !== 0) {
+        if (response !== null) {
             return c.json(response);
         }
         else {
@@ -38,15 +43,16 @@ export async function createAddress(c) {
         }
     }
     catch (error) {
-        return c.json(error);
+        return c.json({ message: error });
     }
 }
-export async function updateAddress(c) {
-    const id = c.req.param("id");
-    const updateContent = await c.req.json("");
-    const response = await serveAddressUpdate(id, updateContent);
+exports.createAddress = createAddress;
+async function updateAddress(c) {
+    const id = Number(c.req.param("id"));
+    const updateContent = await c.req.json();
+    const response = await (0, address_service_1.serveAddressUpdate)(id, updateContent);
     try {
-        if (response.length !== 0) {
+        if (response !== null) {
             return c.json({
                 message: "Address updated successfully",
                 content: response,
@@ -57,12 +63,13 @@ export async function updateAddress(c) {
         }
     }
     catch (error) {
-        return error;
+        return c.json({ message: error });
     }
 }
-export async function removeAddress(c) {
-    const id = c.req.param("id");
-    const response = await deleteAddress(id);
+exports.updateAddress = updateAddress;
+async function removeAddress(c) {
+    const id = Number(c.req.param("id"));
+    const response = await (0, address_service_1.deleteAddress)(id);
     try {
         if (response) {
             return c.json({ message: "address deleted successfully" });
@@ -72,6 +79,7 @@ export async function removeAddress(c) {
         }
     }
     catch (error) {
-        return c.json(error, 404);
+        return c.json({ message: error });
     }
 }
+exports.removeAddress = removeAddress;

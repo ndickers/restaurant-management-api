@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { menu_item } from "../drizzle/schema";
+import { menu_item, TSMenuItem, TIMenuItem } from "../drizzle/schema";
 
 export async function serveAllMenuItem() {
   return await db.query.menu_item.findMany();
@@ -12,18 +12,12 @@ export async function fetchOneMenuItem(id) {
   });
 }
 
-export async function serveMenuItem(details) {
-  return await db.insert(menu_item).values(details).returning(menu_item);
+export async function serveMenuItem(details: TIMenuItem) {
+  return await db.insert(menu_item).values(details);
 }
 
 export async function serveMenuItemUpdate(id, updates) {
-  return await db
-    .update(menu_item)
-    .set(updates)
-    .where(eq(menu_item.id, id))
-    .returning({
-      content: menu_item,
-    });
+  return await db.update(menu_item).set(updates).where(eq(menu_item.id, id));
 }
 
 export async function deleteMenuItem(id) {

@@ -1,25 +1,22 @@
-import { Hono } from "hono";
-import { registerUser, loginUser } from "./auth.controller";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-const newUserinputs = z.object({
-    username: z.string(),
-    role: z.string(),
-    password: z.string(),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.authRoute = void 0;
+const hono_1 = require("hono");
+const auth_controller_1 = require("./auth.controller");
+const zod_validator_1 = require("@hono/zod-validator");
+const zod_1 = require("zod");
+const newUserinputs = zod_1.z.object({
+    username: zod_1.z.string(),
+    role: zod_1.z.string(),
+    password: zod_1.z.string(),
 });
-export const authRoute = new Hono();
-authRoute.post("/register", zValidator("json", newUserinputs, (result, c) => {
-    if (!result.success) {
-        const postError = result.error.issues[0];
-        const { path, message, expected } = postError;
-        if (message === "Required") {
-            return c.json({ Error: `Field of ${path[0]} is missing` }, 404);
-        }
-        else {
-            return c.json({
-                Error: `Field of ${path[0]} only allow data of type ${expected}`,
-            }, 404);
-        }
+exports.authRoute = new hono_1.Hono();
+exports.authRoute.post("/register", (0, zod_validator_1.zValidator)("json", newUserinputs, (result, c) => {
+    if (result.success) {
+        return c.json({ message: "Succesfully added" });
     }
-}), registerUser);
-authRoute.post("/login", loginUser);
+    else {
+        return c.json({ message: "Confirm your data types" });
+    }
+}), auth_controller_1.registerUser);
+exports.authRoute.post("/login", auth_controller_1.loginUser);

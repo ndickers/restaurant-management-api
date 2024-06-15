@@ -1,33 +1,44 @@
-import db from "../drizzle/db";
-import { eq } from "drizzle-orm";
-import { category } from "../drizzle/schema";
-export async function serveAllCategory() {
-    return await db.query.category.findMany({
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteCategory = exports.serveCategoryUpdate = exports.serveCategory = exports.fetchOneCategory = exports.serveAllCategory = void 0;
+const db_1 = __importDefault(require("../drizzle/db"));
+const drizzle_orm_1 = require("drizzle-orm");
+const schema_1 = require("../drizzle/schema");
+async function serveAllCategory() {
+    return await db_1.default.query.category.findMany({
         with: {
             menu_item: true,
         },
     });
 }
-export async function fetchOneCategory(id) {
-    return await db.query.category.findMany({
-        where: eq(category.id, id),
+exports.serveAllCategory = serveAllCategory;
+async function fetchOneCategory(id) {
+    return await db_1.default.query.category.findMany({
+        where: (0, drizzle_orm_1.eq)(schema_1.category.id, id),
         with: {
             menu_item: true,
         },
     });
 }
-export async function serveCategory(newVal) {
-    return await db.insert(category).values(newVal).returning(category);
+exports.fetchOneCategory = fetchOneCategory;
+async function serveCategory(newVal) {
+    return await db_1.default.insert(schema_1.category).values(newVal);
 }
-export async function serveCategoryUpdate(id, updates) {
-    return await db
-        .update(category)
+exports.serveCategory = serveCategory;
+async function serveCategoryUpdate(id, updates) {
+    return await db_1.default
+        .update(schema_1.category)
         .set(updates)
-        .where(eq(category.id, id))
+        .where((0, drizzle_orm_1.eq)(schema_1.category.id, id))
         .returning({
-        content: category,
+        content: schema_1.category,
     });
 }
-export async function deleteCategory(id) {
-    return await db.delete(category).where(eq(category.id, id));
+exports.serveCategoryUpdate = serveCategoryUpdate;
+async function deleteCategory(id) {
+    return await db_1.default.delete(schema_1.category).where((0, drizzle_orm_1.eq)(schema_1.category.id, id));
 }
+exports.deleteCategory = deleteCategory;

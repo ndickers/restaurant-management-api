@@ -22,17 +22,11 @@ export async function fetchOneComment(id) {
 }
 
 export async function serveComment(orderStatus) {
-  return await db.insert(comment).values(orderStatus).returning(comment);
+  return await db.insert(comment).values(orderStatus);
 }
 
 export async function serveCommentUpdate(id, updates) {
-  return await db
-    .update(comment)
-    .set(updates)
-    .where(eq(comment.id, id))
-    .returning({
-      content: comment,
-    });
+  return await db.update(comment).set(updates).where(eq(comment.id, id));
 }
 
 export async function deleteComment(id) {

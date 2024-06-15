@@ -22,10 +22,7 @@ export async function fetchOneOrderMenu(id) {
 }
 
 export async function serveOrderMenu(orderStatus) {
-  return await db
-    .insert(order_menu_item)
-    .values(orderStatus)
-    .returning(order_menu_item);
+  return await db.insert(order_menu_item).values(orderStatus);
 }
 
 export async function serveOrderMenuUpdate(id, updates) {

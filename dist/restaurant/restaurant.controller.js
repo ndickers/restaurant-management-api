@@ -1,6 +1,9 @@
-import { serveAllRest, fetchOneRest, addRest, serveUpdate, deleteRest, } from "./restaurant.service";
-export async function getAllRestaurant(c) {
-    const response = await serveAllRest();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.removeResturant = exports.updateResturant = exports.postResturant = exports.getResturant = exports.getAllRestaurant = void 0;
+const restaurant_service_1 = require("./restaurant.service");
+async function getAllRestaurant(c) {
+    const response = await (0, restaurant_service_1.serveAllRest)();
     try {
         if (response.length === 0) {
             return c.json({ message: "No registered Restaurant" });
@@ -11,11 +14,12 @@ export async function getAllRestaurant(c) {
         return c.json(error, 404);
     }
 }
-export async function getResturant(c) {
+exports.getAllRestaurant = getAllRestaurant;
+async function getResturant(c) {
     const id = c.req.param("id");
-    const response = await fetchOneRest(id);
+    const response = await (0, restaurant_service_1.fetchOneRest)(id);
     try {
-        if (response.length === 0) {
+        if (response === null) {
             return c.json({ message: "The restaurant is not registered" }, 404);
         }
         return c.json(response);
@@ -24,11 +28,12 @@ export async function getResturant(c) {
         return c.json(error, 404);
     }
 }
-export async function postResturant(c) {
+exports.getResturant = getResturant;
+async function postResturant(c) {
     const restDetail = await c.req.json();
-    const response = await addRest(restDetail);
+    const response = await (0, restaurant_service_1.addRest)(restDetail);
     try {
-        if (response.length === 0) {
+        if (response === null) {
             return c.json({
                 error: "restaurant fail to create",
             }, 404);
@@ -39,12 +44,13 @@ export async function postResturant(c) {
         return c.json(error);
     }
 }
-export async function updateResturant(c) {
+exports.postResturant = postResturant;
+async function updateResturant(c) {
     const id = c.req.param("id");
     const updateContent = await c.req.json("");
-    const response = await serveUpdate(id, updateContent);
+    const response = await (0, restaurant_service_1.serveUpdate)(id, updateContent);
     try {
-        if (response.length === 0) {
+        if (response === null) {
             return c.json({ message: "The restaurant does not exist" }, 404);
         }
         return c.json(response);
@@ -53,11 +59,12 @@ export async function updateResturant(c) {
         return c.json(error);
     }
 }
-export async function removeResturant(c) {
+exports.updateResturant = updateResturant;
+async function removeResturant(c) {
     const id = c.req.param("id");
-    const response = await deleteRest(id);
+    const response = await (0, restaurant_service_1.deleteRest)(id);
     try {
-        if (response.length === 0) {
+        if (response === null) {
             return c.json({ message: "Restaurant does not exist" }, 404);
         }
         else {
@@ -68,3 +75,4 @@ export async function removeResturant(c) {
         return c.json(error, 404);
     }
 }
+exports.removeResturant = removeResturant;

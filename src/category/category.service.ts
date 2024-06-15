@@ -1,6 +1,6 @@
 import db from "../drizzle/db";
 import { eq } from "drizzle-orm";
-import { category, TSCategory } from "../drizzle/schema";
+import { category, TSCategory, TICategory } from '../drizzle/schema';
 
 export async function serveAllCategory(): Promise<TSCategory[] | null> {
   return await db.query.category.findMany({
@@ -10,7 +10,7 @@ export async function serveAllCategory(): Promise<TSCategory[] | null> {
   });
 }
 
-export async function fetchOneCategory(id): Promise<TSCategory> {
+export async function fetchOneCategory(id): Promise<TSCategory[]> {
   return await db.query.category.findMany({
     where: eq(category.id, id),
     with: {
@@ -19,8 +19,8 @@ export async function fetchOneCategory(id): Promise<TSCategory> {
   });
 }
 
-export async function serveCategory(newVal) {
-  return await db.insert(category).values(newVal).returning(category);
+export async function serveCategory(newVal:TICategory) {
+  return await db.insert(category).values(newVal);
 }
 
 export async function serveCategoryUpdate(id, updates) {

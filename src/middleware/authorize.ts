@@ -8,7 +8,7 @@ export async function authorize(c: Context, next, userRole: string) {
     return c.json({ message: "You're unauthorized" }, 401);
   }
   try {
-    const { role } = jwt.verify(token, process.env.SECRET);
+    const { role } = (await jwt.verify(token, process.env.SECRET)) as string;
 
     if (userRole === "both") {
       await next();

@@ -1,7 +1,7 @@
 import db from "../drizzle/db";
 import { driver, orders, TSDriver, TIDriver, TSUser } from "../drizzle/schema";
 import { eq } from "drizzle-orm";
-export async function serverAllDriver() {
+export async function serverAllDriver(): Promise<TSDriver[] | null> {
   return await db.query.driver.findMany({
     with: {
       users: true,
@@ -10,28 +10,15 @@ export async function serverAllDriver() {
   });
 }
 
-export async function addDriver(driverDetail: TIDriver): Promise<TSDriver> {
-  try {
-    return await db.insert(driver).values(driverDetail).returning(driver);
-  } catch (error) {
-    return "cannot insert";
-  }
+export async function addDriver(driverDetail: TIDriver) {
+  return await db.insert(driver).values(driverDetail);
 }
 
-export async function serveUpdate(
-  id: number,
-  driverUpdates: TIDriver
-): Promise<TSDriver> {
-  return await db
-    .update(driver)
-    .set(driverUpdates)
-    .where(eq(driver.id, id))
-    .returning({
-      content: driver,
-    });
+export async function serveUpdate(id: number, driverUpdates: TIDriver) {
+  return await db.update(driver).set(driverUpdates).where(eq(driver.id, id));
 }
 
-export async function fetchOneDriver(id: number): Promise<TSDriver> {
+export async function fetchOneDriver(id: number): Promise<TSDriver[] | null> {
   return await db.query.driver.findMany({
     where: eq(driver.id, id),
     with: {

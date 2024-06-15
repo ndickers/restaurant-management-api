@@ -22,20 +22,14 @@ export async function fetchOneOwner(id) {
 }
 
 export async function serveOwner(orderStatus) {
-  return await db
-    .insert(restaurant_owner)
-    .values(orderStatus)
-    .returning(restaurant_owner);
+  return await db.insert(restaurant_owner).values(orderStatus);
 }
 
 export async function serveOwnerUpdate(id, updates) {
   return await db
     .update(restaurant_owner)
     .set(updates)
-    .where(eq(restaurant_owner.id, id))
-    .returning({
-      content: restaurant_owner,
-    });
+    .where(eq(restaurant_owner.id, id));
 }
 
 export async function deleteResOwner(id) {

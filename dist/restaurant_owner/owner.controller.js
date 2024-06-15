@@ -1,9 +1,11 @@
-import { serveAllOwner, serveOwner, fetchOneOwner, serveOwnerUpdate, deleteResOwner, } from "./owner.service";
-export async function getAllOwner(c) {
-    const { limit } = c.req.query();
-    const response = await serveAllOwner(limit);
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteOwner = exports.updateOwner = exports.addOwner = exports.getOneOwner = exports.getAllOwner = void 0;
+const owner_service_1 = require("./owner.service");
+async function getAllOwner(c) {
+    const response = await (0, owner_service_1.serveAllOwner)();
     try {
-        if (response.length === 0) {
+        if (response === null) {
             return c.json({
                 message: "Currently there is no registered restaurant owner",
             });
@@ -11,54 +13,58 @@ export async function getAllOwner(c) {
         return c.json(response);
     }
     catch (error) {
-        return c.json(error, 404);
+        return c.json({ message: error });
     }
 }
-export async function getOneOwner(c) {
-    const id = c.req.param("id");
-    const response = await fetchOneOwner(id);
+exports.getAllOwner = getAllOwner;
+async function getOneOwner(c) {
+    const id = Number(c.req.param("id"));
+    const response = await (0, owner_service_1.fetchOneOwner)(id);
     try {
-        if (response.length === 0) {
+        if (Object.keys(response).length === 0) {
             return c.json({ message: "The owner does not exist" }, 404);
         }
         return c.json(response);
     }
     catch (error) {
-        return c.json(error);
+        return c.json({ message: error });
     }
 }
-export async function addOwner(c) {
-    const newOwner = await c.req.json("");
-    const response = await serveOwner(newOwner);
+exports.getOneOwner = getOneOwner;
+async function addOwner(c) {
+    const newOwner = await c.req.json();
+    const response = await (0, owner_service_1.serveOwner)(newOwner);
     try {
-        if (response.length === 0) {
+        if (Object.keys(response).length === 0) {
             return c.json({ message: "Unable to create new owner" }, 404);
         }
         return c.json(response);
     }
     catch (error) {
-        return c.json(error);
+        return c.json({ message: error });
     }
 }
-export async function updateOwner(c) {
-    const id = c.req.param("id");
-    const updateContent = await c.req.json("");
-    const response = await serveOwnerUpdate(id, updateContent);
+exports.addOwner = addOwner;
+async function updateOwner(c) {
+    const id = Number(c.req.param("id"));
+    const updateContent = await c.req.json();
+    const response = await (0, owner_service_1.serveOwnerUpdate)(id, updateContent);
     try {
-        if (response.length === 0) {
+        if (response === null) {
             return c.json({ message: "Unable to update restaurant owner" }, 404);
         }
         return c.json(response);
     }
     catch (error) {
-        return c.json(error);
+        return c.json({ message: error });
     }
 }
-export async function deleteOwner(c) {
-    const id = c.req.param("id");
-    const response = await deleteResOwner(id);
+exports.updateOwner = updateOwner;
+async function deleteOwner(c) {
+    const id = Number(c.req.param("id"));
+    const response = await (0, owner_service_1.deleteResOwner)(id);
     try {
-        if (response.length === 0) {
+        if (Object.keys(response).length === 0) {
             return c.json({ message: "Restaurant owner does not exist" }, 404);
         }
         else {
@@ -66,6 +72,7 @@ export async function deleteOwner(c) {
         }
     }
     catch (error) {
-        return c.json(error, 404);
+        return c.json({ message: error });
     }
 }
+exports.deleteOwner = deleteOwner;

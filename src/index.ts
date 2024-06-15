@@ -3,7 +3,6 @@ import { Hono } from "hono";
 import { userRoute } from "./users/users.route";
 import { driverRoute } from "./driver/driver.routes";
 import { restaurantRoute } from "./restaurant/restaurant.routes";
-import { ordersRoutes } from "./orders/orders.routes";
 import { orderStatusRoute } from "./order_status/order_status.routes";
 import { ordersRoutes } from "./orders/orders.routes";
 import { authRoute } from "./auth/auth.routes";

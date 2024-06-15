@@ -15,7 +15,7 @@ export async function serveAllUsers(): Promise<TSUser[] | null> {
   });
 }
 
-export async function serveOneUser(id: number): Promise<TSUser | null> {
+export async function serveOneUser(id: number): Promise<TSUser[] | null> {
   return await db.query.users.findMany({
     where: eq(users.id, id),
     with: {
@@ -27,16 +27,12 @@ export async function serveOneUser(id: number): Promise<TSUser | null> {
     },
   });
 }
-export async function addToService(user: TIUser): Promise<TSUser | null> {
+export async function addToService(user: TIUser) {
   return await db.insert(users).values(user);
 }
 
 export async function updateWhole(id: number, user: TIUser) {
-  return await db
-    .update(users)
-    .set(user)
-    .where(eq(users.id, id))
-    .returning(users);
+  return await db.update(users).set(user).where(eq(users.id, id));
 }
 
 export async function deleteService(id: number) {

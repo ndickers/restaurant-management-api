@@ -1,19 +1,28 @@
-import db from "../drizzle/db";
-import { eq } from "drizzle-orm";
-import { auth } from "../drizzle/schema";
-export async function confirmUserName(uName) {
-    const checkUsername = await db.query.auth.findMany({
-        where: eq(auth.username, uName),
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.userLogin = exports.registerNewUser = exports.confirmUserName = void 0;
+const db_1 = __importDefault(require("../drizzle/db"));
+const drizzle_orm_1 = require("drizzle-orm");
+const schema_1 = require("../drizzle/schema");
+async function confirmUserName(uName) {
+    const checkUsername = await db_1.default.query.auth.findMany({
+        where: (0, drizzle_orm_1.eq)(schema_1.auth.username, uName),
     });
     return checkUsername;
 }
-export async function registerNewUser(user) {
-    await db.insert(auth).values(user);
+exports.confirmUserName = confirmUserName;
+async function registerNewUser(user) {
+    await db_1.default.insert(schema_1.auth).values(user);
 }
-export async function userLogin(user) {
-    const getUser = await db.query.auth.findMany({
+exports.registerNewUser = registerNewUser;
+async function userLogin(user) {
+    const getUser = await db_1.default.query.auth.findMany({
         with: { user: true },
-        where: eq(auth.username, user.username),
+        where: (0, drizzle_orm_1.eq)(schema_1.auth.username, user.username),
     });
     return getUser;
 }
+exports.userLogin = userLogin;

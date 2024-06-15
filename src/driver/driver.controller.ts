@@ -21,7 +21,7 @@ export async function getDrivers(c: Context) {
 }
 
 export async function getOneDriver(c: Context) {
-  const id: number = c.req.param("id");
+  const id = Number(c.req.param("id"));
   const response = await fetchOneDriver(id);
   try {
     if (Object.keys(response).length === 0) {
@@ -29,7 +29,7 @@ export async function getOneDriver(c: Context) {
     }
     return c.json(response);
   } catch (error) {
-    return c.json(error, 404);
+    return c.json({ message: error });
   }
 }
 
@@ -38,18 +38,18 @@ export async function postDriver(c: Context) {
 
   const response = await addDriver(driver);
   try {
-    if (response.length === 0) {
+    if (Object.keys(response).length === 0) {
       return c.json({ message: "Driver was unable to be added" });
     }
     return c.json(response);
   } catch (error) {
-    return c.json(error);
+    return c.json({ message: error });
   }
 }
 
 export async function updateDriver(c: Context) {
-  const id = c.req.param("id");
-  const updateContent = await c.req.json("");
+  const id = Number(c.req.param("id"));
+  const updateContent = await c.req.json();
   const response = await serveUpdate(id, updateContent);
   try {
     if (Object.keys(response).length === 0) {
@@ -57,15 +57,15 @@ export async function updateDriver(c: Context) {
     }
     return c.json(response);
   } catch (error) {
-    return c.json(error);
+    return c.json({ message: error });
   }
 }
 
 export async function removeDriver(c: Context) {
-  const id:number = c.req.param("id");
+  const id = Number(c.req.param("id"));
   const response = await deleteDriver(id);
   try {
-    if (response.length !== 0) {
+    if (Object.keys(response).length !== 0) {
       return c.json({ message: "Driver deleted successfully" });
     } else {
       return c.json({
@@ -73,6 +73,6 @@ export async function removeDriver(c: Context) {
       });
     }
   } catch (error) {
-    return c.json(error);
+    return c.json({ message: error });
   }
 }

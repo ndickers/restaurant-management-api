@@ -36,8 +36,8 @@ export const auth = pgTable("auth", {
 
 export const authRelations = relations(auth, ({ one }) => ({
   user: one(users, {
-    fields: [auth.username],
-    references: [users.name],
+    fields: [auth.id],
+    references: [users.id],
   }),
 }));
 // const authRelations = relations
@@ -331,7 +331,7 @@ export type TSUser = typeof users.$inferSelect;
 export type TIDriver = typeof driver.$inferInsert;
 export type TSDriver = typeof driver.$inferSelect;
 
-export type TIddress = typeof address.$inferInsert;
+export type TIaddress = typeof address.$inferInsert;
 export type TSaddress = typeof address.$inferSelect;
 
 export type TIOrder = typeof orders.$inferInsert;
@@ -339,3 +339,15 @@ export type TSOrder = typeof orders.$inferSelect;
 
 export type TICategory = typeof category.$inferInsert;
 export type TSCategory = typeof category.$inferSelect;
+
+export type TIAuth = typeof auth.$inferInsert;
+export type TSAuth = typeof auth.$inferSelect;
+
+export type TIOrderStatus = typeof order_status.$inferInsert;
+export type TSOrderStatus = typeof order_status.$inferSelect;
+
+export type TIMenuItem = typeof menu_item.$inferInsert;
+export type TSMenuItem = typeof menu_item.$inferSelect;
+
+export type TICity = typeof city.$inferInsert;
+export type TSCity = typeof city.$inferSelect;

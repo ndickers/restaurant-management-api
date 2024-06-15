@@ -14,22 +14,13 @@ export const authRoute = new Hono();
 authRoute.post(
   "/register",
   zValidator("json", newUserinputs, (result, c) => {
-    if (!result.success) {
-      const postError = result.error.issues[0];
-      const { path, message, expected } = postError;
-      if (message === "Required") {
-        return c.json({ Error: `Field of ${path[0]} is missing` }, 404);
-      } else {
-        return c.json(
-          {
-            Error: `Field of ${path[0]} only allow data of type ${expected}`,
-          },
-          404
-        );
-      }
+    if (result.success) {
+      return c.json({ message: "Succesfully added" });
+    } else {
+      return c.json({ message: "Confirm your data types" });
     }
   }),
   registerUser
 );
 
-authRoute.post("/login",loginUser);
+authRoute.post("/login", loginUser);

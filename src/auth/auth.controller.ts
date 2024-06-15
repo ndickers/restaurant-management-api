@@ -2,7 +2,9 @@ import "dotenv/config";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { confirmUserName, registerNewUser, userLogin } from "./auth.service";
-export async function registerUser(c) {
+import { Context } from "hono";
+import { TIAuth, TSAuth } from "../drizzle/schema";
+export async function registerUser(c: Context) {
   const newUser = await c.req.json();
 
   const isUserExist = await confirmUserName(newUser.username);
@@ -17,14 +19,15 @@ export async function registerUser(c) {
   return c.json({ message: "The username already exist" }, 403);
 }
 
-export async function loginUser(c) {
+export async function loginUser(c: Context) {
   const userCredentials = await c.req.json();
   const user = await userLogin(userCredentials);
 
-  const { password } = user;
-  if (user.length === 0) {
+  if (user === null) {
     return c.json({ message: "User does not exist" }, 403);
   }
+  // const { password }: string | null = user;
+
   const checkPassMatch = await bcrypt.compare(
     userCredentials.password,
     user[0].password
@@ -37,7 +40,10 @@ export async function loginUser(c) {
 
   console.log(username, role);
 
-  const token = jwt.sign({ username, role }, process.env.SECRET);
+  const token: string = jwt.sign(
+    { username, role },
+    process.env.SECRET as string
+  );
 
   return c.json({ token });
 }

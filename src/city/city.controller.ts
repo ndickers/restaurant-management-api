@@ -4,13 +4,14 @@ import {
   fetchOneCity,
   serveCityUpdate,
   deleteCity,
-} from "./city.service.ts";
+} from "./city.service";
 import { city, stateRelation } from "../drizzle/schema";
+import { Context } from 'hono';
 
 export async function getAllCity(c) {
   const response = await serveAllCity();
   try {
-    if (response.length === 0) {
+    if (response === null) {
       return c.json({ message: "No registered category" });
     }
     return c.json(response);
@@ -20,10 +21,10 @@ export async function getAllCity(c) {
 }
 
 export async function getOneCity(c) {
-  const id = c.req.param("id") as number;
+  const id = Number(c.req.param("id"));
   const response = await fetchOneCity(id);
   try {
-    if (response.length === 0) {
+    if (response === null) {
       return c.json({ message: "No registered city" }, 404);
     } else {
       return c.json(response);
@@ -34,10 +35,10 @@ export async function getOneCity(c) {
 }
 
 export async function addCity(c) {
-  const newDetails = await c.req.json("");
+  const newDetails = await c.req.json();
   const response = await serveCity(newDetails);
   try {
-    if (response.length === 0) {
+    if (response === null) {
       return c.json({ message: "You  cannot update non existing city" });
     } else {
       return c.json(response);
@@ -48,12 +49,12 @@ export async function addCity(c) {
 }
 
 export async function updateCity(c) {
-  const id = c.req.param("id");
-  const updateContent = await c.req.json("");
+  const id = Number(c.req.param("id"));
+  const updateContent = await c.req.json();
 
   const response = await serveCityUpdate(id, updateContent);
   try {
-    if (response.length === 0) {
+    if (response === null) {
       return c.json(
         { message: "The city does not exist. Create it first" },
         404
@@ -66,10 +67,10 @@ export async function updateCity(c) {
 }
 
 export async function removeCity(c) {
-  const id = c.req.param("id") as number;
+  const id = Number(c.req.param("id"));
   const response = await deleteCity(id);
   try {
-    if (response.length !== 0) {
+    if (response === null) {
       return c.json({ message: "Category deleted successfully" });
     } else {
       return c.json({ message: "You cannot delete non existing category" });

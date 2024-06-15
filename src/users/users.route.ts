@@ -29,21 +29,11 @@ userRoute.get("/users/:id", authorizeAll, getOneUser);
 
 userRoute.post(
   "/users",
-  zValidator("json", inputUserData, (result, c: Context) => {
-    console.log();
-    if (!result.success) {
-      const field = result.error.issues[0];
-      const expectedFieldType = field.expected;
-      const missingField = field.path[0];
-
-      const message = result.error.issues[0].message;
-      if (message === "Required") {
-        return c.json({ Error: `${missingField} field is missing` });
-      } else {
-        return c.json({
-          Error: `${missingField} only takes type ${expectedFieldType}`,
-        });
-      }
+  zValidator("json", inputUserData, (result, c) => {
+    if (result.success) {
+      return c.json({ message: "Succesfully added" });
+    } else {
+      return c.json({ message: "Confirm your data types" });
     }
   }),
   authorizeAll,

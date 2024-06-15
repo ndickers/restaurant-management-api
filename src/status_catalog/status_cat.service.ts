@@ -20,20 +20,14 @@ export async function fetchOneStatusCatalog(id) {
 }
 
 export async function serveStatusCatalog(orderStatus) {
-  return await db
-    .insert(status_catalog)
-    .values(orderStatus)
-    .returning(status_catalog);
+  return await db.insert(status_catalog).values(orderStatus);
 }
 
 export async function serveStatusCatalogUpdate(id, updates) {
   return await db
     .update(status_catalog)
     .set(updates)
-    .where(eq(status_catalog.id, id))
-    .returning({
-      content: status_catalog,
-    });
+    .where(eq(status_catalog.id, id));
 }
 
 export async function deleteStatusCatalog(id) {

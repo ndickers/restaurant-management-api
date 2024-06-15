@@ -1,32 +1,29 @@
-import { Hono } from "hono";
-import { getOneAddress, createAddress, getAllAddress, updateAddress, removeAddress, } from "./address.controller.ts";
-import { adminAuth, authorizeAll } from "../middleware/authorize";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-export const addressRoutes = new Hono();
-const inputAddress = z.object({
-    street_address_1: z.string(),
-    street_address_2: z.string(),
-    zip_code: z.string(),
-    delivery_instructions: z.string(),
-    user_id: z.number(),
-    city_id: z.number(),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.addressRoutes = void 0;
+const hono_1 = require("hono");
+const address_controller_1 = require("./address.controller");
+const authorize_1 = require("../middleware/authorize");
+const zod_validator_1 = require("@hono/zod-validator");
+const zod_1 = require("zod");
+exports.addressRoutes = new hono_1.Hono();
+const inputAddress = zod_1.z.object({
+    street_address_1: zod_1.z.string(),
+    street_address_2: zod_1.z.string(),
+    zip_code: zod_1.z.string(),
+    delivery_instructions: zod_1.z.string(),
+    user_id: zod_1.z.number(),
+    city_id: zod_1.z.number(),
 });
-addressRoutes.get("/address", adminAuth, getAllAddress);
-addressRoutes.get("/address/:id", authorizeAll, getOneAddress);
-addressRoutes.post("/address", zValidator("json", inputAddress, (result, c) => {
-    if (!result.success) {
-        const postError = result.error.issues[0];
-        const { path, message, expected } = postError;
-        if (message === "Required") {
-            return c.json({ Error: `Field of ${path[0]} is missing` }, 404);
-        }
-        else {
-            return c.json({
-                Error: `Field of ${path[0]} only allow data of type ${expected}`,
-            }, 404);
-        }
+exports.addressRoutes.get("/address", authorize_1.adminAuth, address_controller_1.getAllAddress);
+exports.addressRoutes.get("/address/:id", authorize_1.authorizeAll, address_controller_1.getOneAddress);
+exports.addressRoutes.post("/address", (0, zod_validator_1.zValidator)("json", inputAddress, (result, c) => {
+    if (result.success) {
+        return c.json({ message: "Succesfully added" });
     }
-}), authorizeAll, createAddress);
-addressRoutes.patch("/address/:id", authorizeAll, updateAddress);
-addressRoutes.delete("/address/:id", authorizeAll, removeAddress);
+    else {
+        return c.json({ message: "Confirm your data types" });
+    }
+}), authorize_1.authorizeAll, address_controller_1.createAddress);
+exports.addressRoutes.patch("/address/:id", authorize_1.authorizeAll, address_controller_1.updateAddress);
+exports.addressRoutes.delete("/address/:id", authorize_1.authorizeAll, address_controller_1.removeAddress);

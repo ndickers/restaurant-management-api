@@ -1,35 +1,32 @@
-import { Hono } from "hono";
-import { getOneOrder, addOrder, getAllOrders, updateOrder, removeOrder, } from "./orders.controller";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-import { adminAuth, authorizeAll } from "../middleware/authorize";
-export const ordersRoutes = new Hono();
-const inputOrder = z.object({
-    restaurant_id: z.number(),
-    estimated_delivery_time: z.string(),
-    actual_delivery_time: z.string(),
-    delivery_address_id: z.number(),
-    user_id: z.number(),
-    driver_id: z.number(),
-    price: z.number(),
-    discount: z.number(),
-    final_price: z.number(),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ordersRoutes = void 0;
+const hono_1 = require("hono");
+const orders_controller_1 = require("./orders.controller");
+const zod_validator_1 = require("@hono/zod-validator");
+const zod_1 = require("zod");
+const authorize_1 = require("../middleware/authorize");
+exports.ordersRoutes = new hono_1.Hono();
+const inputOrder = zod_1.z.object({
+    restaurant_id: zod_1.z.number(),
+    estimated_delivery_time: zod_1.z.string(),
+    actual_delivery_time: zod_1.z.string(),
+    delivery_address_id: zod_1.z.number(),
+    user_id: zod_1.z.number(),
+    driver_id: zod_1.z.number(),
+    price: zod_1.z.number(),
+    discount: zod_1.z.number(),
+    final_price: zod_1.z.number(),
 });
-ordersRoutes.get("/orders", adminAuth, getAllOrders);
-ordersRoutes.get("/orders/:id", authorizeAll, getOneOrder);
-ordersRoutes.post("/orders", zValidator("json", inputOrder, (result, c) => {
-    if (!result.success) {
-        const postError = result.error.issues[0];
-        const { path, message, expected } = postError;
-        if (message === "Required") {
-            return c.json({ Error: `Field of ${path[0]} is missing` }, 404);
-        }
-        else {
-            return c.json({
-                Error: `Field of ${path[0]} only allow data of type ${expected}`,
-            }, 404);
-        }
+exports.ordersRoutes.get("/orders", authorize_1.adminAuth, orders_controller_1.getAllOrders);
+exports.ordersRoutes.get("/orders/:id", authorize_1.authorizeAll, orders_controller_1.getOneOrder);
+exports.ordersRoutes.post("/orders", (0, zod_validator_1.zValidator)("json", inputOrder, (result, c) => {
+    if (result.success) {
+        return c.json({ message: "Succesfully added" });
     }
-}), authorizeAll, addOrder);
-ordersRoutes.patch("/orders/:id", authorizeAll, updateOrder);
-ordersRoutes.delete("/orders/:id", authorizeAll, removeOrder);
+    else {
+        return c.json({ message: "Confirm your data types" });
+    }
+}), authorize_1.authorizeAll, orders_controller_1.addOrder);
+exports.ordersRoutes.patch("/orders/:id", authorize_1.authorizeAll, orders_controller_1.updateOrder);
+exports.ordersRoutes.delete("/orders/:id", authorize_1.authorizeAll, orders_controller_1.removeOrder);

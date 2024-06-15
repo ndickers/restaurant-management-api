@@ -20,13 +20,11 @@ export async function fetchOneState(id) {
 }
 
 export async function serveState(orderStatus) {
-  return await db.insert(state).values(orderStatus).returning(state);
+  return await db.insert(state).values(orderStatus);
 }
 
 export async function serveStateUpdate(id, updates) {
-  return await db.update(state).set(updates).where(eq(state.id, id)).returning({
-    content: state,
-  });
+  return await db.update(state).set(updates).where(eq(state.id, id));
 }
 
 export async function deleteState(id) {

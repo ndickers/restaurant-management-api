@@ -21,17 +21,14 @@ export async function fetchOneRest(id) {
 }
 
 export async function addRest(restDetail) {
-  return await db.insert(restaurant).values(restDetail).returning(restaurant);
+  return await db.insert(restaurant).values(restDetail);
 }
 
 export async function serveUpdate(id, restUpdates) {
   return await db
     .update(restaurant)
     .set(restUpdates)
-    .where(eq(restaurant.id, id))
-    .returning({
-      content: restaurant,
-    });
+    .where(eq(restaurant.id, id));
 }
 
 export async function deleteRest(id) {

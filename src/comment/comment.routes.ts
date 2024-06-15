@@ -7,8 +7,8 @@ import {
   addComment,
   getOneComment,
   updateComment,
-  deleteComment,
-} from "./comment.controller.ts";
+  removeComment,
+} from "./comment.controller";
 
 export const commentRoute = new Hono();
 
@@ -23,26 +23,17 @@ const inputComment = z.object({
   zip_code: z.string(),
   delivery_instructions: z.string(),
 });
-commentRoute.delete("/comments/:id", adminAuth, deleteComment);
+commentRoute.delete("/comments/:id", adminAuth, removeComment);
 commentRoute.get("/comments", authorizeAll, getAllComment);
 commentRoute.get("/comments/:id", authorizeAll, getOneComment);
 commentRoute.patch("/comments/:id", authorizeAll, updateComment);
 commentRoute.post(
   "/comments",
   zValidator("json", inputComment, (result, c) => {
-    if (!result.success) {
-      const postError = result.error.issues[0];
-      const { path, message, expected } = postError;
-      if (message === "Required") {
-        return c.json({ Error: `Field of ${path[0]} is missing` }, 404);
-      } else {
-        return c.json(
-          {
-            Error: `Field of ${path[0]} only allow data of type ${expected}`,
-          },
-          404
-        );
-      }
+    if (result.success) {
+      return c.json({ message: "Succesfully added" });
+    } else {
+      return c.json({ message: "Confirm your data types" });
     }
   }),
   authorizeAll,

@@ -10,7 +10,7 @@ import { order_status } from "../drizzle/schema";
 export async function getAllOrderStatus(c) {
   const response = await serveAllOrderStatus();
   try {
-    if (response.length === 0) {
+    if (response === null) {
       return c.json({ message: "No registered order status exists" });
     }
     return c.json(response);
@@ -23,7 +23,7 @@ export async function getOneOrderStatus(c) {
   const id = c.req.param("id") as number;
   const response = await fetchOneOrderStatus(id);
   try {
-    if (response.length === 0) {
+    if (response === null) {
       return c.json({ message: "Order status not found" }, 404);
     }
     return c.json(response);
@@ -35,7 +35,7 @@ export async function getOneOrderStatus(c) {
 export async function addOrderStatus(c) {
   const orderStatus = await c.req.json("");
   const response = await serveOrderStatus(orderStatus);
-  if (response.length === 0) {
+  if (response === null) {
     return c.json({ message: "adding order status declined" }, 404);
   }
   return c.json({ message: "Order status was successfully created", response });
@@ -43,11 +43,11 @@ export async function addOrderStatus(c) {
 
 export async function updateOrderStatus(c) {
   const id = c.req.param("id");
-  const updateContent = await c.req.json("");
+  const updateContent = await c.req.json();
 
   const response = await serveOrderStatusUpdate(id, updateContent);
   try {
-    if (response.length === 0) {
+    if (response === null) {
       return c.json({ message: "The order status does not exist" }, 404);
     }
     return c.json(response);
@@ -60,7 +60,7 @@ export async function deleteStatusOrder(c) {
   const id = c.req.param("id") as number;
   const response = await deleteOrderStatus(id);
   try {
-    if (response.length === 0) {
+    if (response === null) {
       return c.json({ message: "Order status does not exist" });
     } else {
       return c.json({ message: "Order status is deleted succesfully" });
