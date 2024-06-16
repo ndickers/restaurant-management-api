@@ -4,7 +4,7 @@ import {
   fetchOneAddress,
   serveAddressUpdate,
   deleteAddress,
-} from "./address.service";
+} from "./address.service"
 import { address } from "../drizzle/schema";
 import { Context } from "hono";
 

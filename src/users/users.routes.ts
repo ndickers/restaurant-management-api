@@ -1,4 +1,4 @@
-import { Hono, Context } from "hono";
+import { Hono } from "hono";
 import {
   getAllUsers,
   getOneUser,
@@ -10,6 +10,7 @@ import { adminAuth, userAuth, authorizeAll } from "../middleware/authorize";
 import { appendTrailingSlash, trimTrailingSlash } from "hono/trailing-slash";
 import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
+
 export const userRoute = new Hono();
 const inputUserData = z.object({
   name: z.string(),

@@ -1,6 +1,9 @@
-import { serverAllDriver, addDriver, fetchOneDriver, deleteDriver, serveUpdate, } from "./driver.service";
-export async function getDrivers(c) {
-    const response = await serverAllDriver();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.removeDriver = exports.updateDriver = exports.postDriver = exports.getOneDriver = exports.getDrivers = void 0;
+const driver_service_1 = require("./driver.service");
+async function getDrivers(c) {
+    const response = await (0, driver_service_1.serverAllDriver)();
     try {
         if (response.length === 0) {
             return c.json({ message: "Currently there is no registered driver" });
@@ -11,9 +14,10 @@ export async function getDrivers(c) {
         return c.json(response, 404);
     }
 }
-export async function getOneDriver(c) {
+exports.getDrivers = getDrivers;
+async function getOneDriver(c) {
     const id = Number(c.req.param("id"));
-    const response = await fetchOneDriver(id);
+    const response = await (0, driver_service_1.fetchOneDriver)(id);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "The driver is not registered" }, 404);
@@ -24,9 +28,10 @@ export async function getOneDriver(c) {
         return c.json({ message: error });
     }
 }
-export async function postDriver(c) {
+exports.getOneDriver = getOneDriver;
+async function postDriver(c) {
     const driver = await c.req.json();
-    const response = await addDriver(driver);
+    const response = await (0, driver_service_1.addDriver)(driver);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "Driver was unable to be added" });
@@ -37,10 +42,11 @@ export async function postDriver(c) {
         return c.json({ message: error });
     }
 }
-export async function updateDriver(c) {
+exports.postDriver = postDriver;
+async function updateDriver(c) {
     const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
-    const response = await serveUpdate(id, updateContent);
+    const response = await (0, driver_service_1.serveUpdate)(id, updateContent);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "You cannot update non existing driver" });
@@ -51,9 +57,10 @@ export async function updateDriver(c) {
         return c.json({ message: error });
     }
 }
-export async function removeDriver(c) {
+exports.updateDriver = updateDriver;
+async function removeDriver(c) {
     const id = Number(c.req.param("id"));
-    const response = await deleteDriver(id);
+    const response = await (0, driver_service_1.deleteDriver)(id);
     try {
         if (Object.keys(response).length !== 0) {
             return c.json({ message: "Driver deleted successfully" });
@@ -68,3 +75,4 @@ export async function removeDriver(c) {
         return c.json({ message: error });
     }
 }
+exports.removeDriver = removeDriver;

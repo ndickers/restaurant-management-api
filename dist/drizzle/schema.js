@@ -1,286 +1,289 @@
-import { pgTable, integer, varchar, serial, date, timestamp, boolean, numeric, text, } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
-export const users = pgTable("users", {
-    id: serial("id").primaryKey(),
-    name: varchar("name"),
-    contact_phone: varchar("contact"),
-    phone_verified: boolean("phone_verified"),
-    email: varchar("email"),
-    email_verified: boolean("email_verified"),
-    confirmation_code: varchar("confirmation_code"),
-    password: varchar("password"),
-    created_at: timestamp("created_at").defaultNow(),
-    updated_at: timestamp("updated_at").defaultNow(),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.commentRelations = exports.comment = exports.addressRelations = exports.address = exports.categoryRelations = exports.category = exports.stateRelation = exports.state = exports.cityRelations = exports.city = exports.menuItemRelations = exports.menu_item = exports.orderMenuRelations = exports.order_menu_item = exports.statusCatalogRelations = exports.status_catalog = exports.orderStatusRelations = exports.order_status = exports.orderRelations = exports.orders = exports.restaurantRelations = exports.driverRelation = exports.driver = exports.restaurant = exports.restaurantOwnerRelation = exports.restaurant_owner = exports.usersRelation = exports.authRelations = exports.auth = exports.users = void 0;
+const pg_core_1 = require("drizzle-orm/pg-core");
+const drizzle_orm_1 = require("drizzle-orm");
+exports.users = (0, pg_core_1.pgTable)("users", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    name: (0, pg_core_1.varchar)("name"),
+    contact_phone: (0, pg_core_1.varchar)("contact"),
+    phone_verified: (0, pg_core_1.boolean)("phone_verified"),
+    email: (0, pg_core_1.varchar)("email"),
+    email_verified: (0, pg_core_1.boolean)("email_verified"),
+    confirmation_code: (0, pg_core_1.varchar)("confirmation_code"),
+    password: (0, pg_core_1.varchar)("password"),
+    created_at: (0, pg_core_1.timestamp)("created_at").defaultNow(),
+    updated_at: (0, pg_core_1.timestamp)("updated_at").defaultNow(),
 });
-export const auth = pgTable("auth", {
-    id: serial("id"),
-    user_id: integer("user_id").references(() => users.id, {
+exports.auth = (0, pg_core_1.pgTable)("auth", {
+    id: (0, pg_core_1.serial)("id"),
+    user_id: (0, pg_core_1.integer)("user_id").references(() => exports.users.id, {
         onDelete: "cascade",
     }),
-    username: varchar("username"),
-    role: varchar("role"),
-    password: varchar("passwordS"),
+    username: (0, pg_core_1.varchar)("username"),
+    role: (0, pg_core_1.varchar)("role"),
+    password: (0, pg_core_1.varchar)("passwordS"),
 });
-export const authRelations = relations(auth, ({ one }) => ({
-    user: one(users, {
-        fields: [auth.id],
-        references: [users.id],
+exports.authRelations = (0, drizzle_orm_1.relations)(exports.auth, ({ one }) => ({
+    user: one(exports.users, {
+        fields: [exports.auth.id],
+        references: [exports.users.id],
     }),
 }));
 // const authRelations = relations
-export const usersRelation = relations(users, ({ many, one }) => ({
-    restaurant_owner: many(restaurant_owner),
-    driver: many(driver),
-    orders: many(orders),
-    comment: many(comment),
-    address: many(address),
+exports.usersRelation = (0, drizzle_orm_1.relations)(exports.users, ({ many, one }) => ({
+    restaurant_owner: many(exports.restaurant_owner),
+    driver: many(exports.driver),
+    orders: many(exports.orders),
+    comment: many(exports.comment),
+    address: many(exports.address),
 }));
-export const restaurant_owner = pgTable("restaurant_owner", {
-    id: serial("id").primaryKey(),
-    restaurant_id: integer("restaurant_id").references(() => restaurant.id, {
+exports.restaurant_owner = (0, pg_core_1.pgTable)("restaurant_owner", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    restaurant_id: (0, pg_core_1.integer)("restaurant_id").references(() => exports.restaurant.id, {
         onDelete: "cascade",
     }),
-    owner_id: integer("owner_id").references(() => users.id, {
+    owner_id: (0, pg_core_1.integer)("owner_id").references(() => exports.users.id, {
         onDelete: "cascade",
     }),
 });
-export const restaurantOwnerRelation = relations(restaurant_owner, ({ one }) => ({
-    users: one(users, {
-        fields: [restaurant_owner.owner_id],
-        references: [users.id],
+exports.restaurantOwnerRelation = (0, drizzle_orm_1.relations)(exports.restaurant_owner, ({ one }) => ({
+    users: one(exports.users, {
+        fields: [exports.restaurant_owner.owner_id],
+        references: [exports.users.id],
     }),
-    restaurant: one(restaurant, {
-        fields: [restaurant_owner.restaurant_id],
-        references: [restaurant.id],
-    }),
-}));
-export const restaurant = pgTable("restaurant", {
-    id: serial("id").primaryKey(),
-    name: varchar("name"),
-    street_address: varchar("street_address"),
-    zip_code: varchar("zip_code"),
-    city_id: integer("city_id"),
-});
-export const driver = pgTable("driver", {
-    id: serial("id").primaryKey(),
-    car_make: varchar("car_make"),
-    car_model: varchar("car_model"),
-    car_year: integer("car_year"),
-    user_id: integer("user_id").references(() => users.id, {
-        onDelete: "cascade",
-    }),
-    online: boolean("online"),
-    delivering: boolean("delivering"),
-});
-export const driverRelation = relations(driver, ({ one, many }) => ({
-    users: one(users, {
-        fields: [driver.user_id],
-        references: [users.id],
-    }),
-    orders: many(orders),
-}));
-export const restaurantRelations = relations(restaurant, ({ many, one }) => ({
-    restaurant_owner: many(restaurant_owner),
-    orders: many(orders),
-    menu_item: many(menu_item),
-    city: one(city, {
-        fields: [restaurant.city_id],
-        references: [city.id],
+    restaurant: one(exports.restaurant, {
+        fields: [exports.restaurant_owner.restaurant_id],
+        references: [exports.restaurant.id],
     }),
 }));
-export const orders = pgTable("orders", {
-    id: serial("id").primaryKey(),
-    restaurant_id: integer(" restaurant_id").references(() => restaurant.id, {
-        onDelete: "cascade",
-    }),
-    estimated_delivery_time: date("estimated_delivery_time"),
-    actual_delivery_time: date("actual_delivery_time"),
-    delivery_address_id: integer("delivery_address_id").references(() => address.id, {
-        onDelete: "cascade",
-    }),
-    user_id: integer("user_id").references(() => users.id, {
-        onDelete: "cascade",
-    }),
-    driver_id: integer("driver_id").references(() => driver.id, {
-        onDelete: "cascade",
-    }),
-    price: numeric("price"),
-    discount: numeric("discount"),
-    final_price: numeric("final_price"),
-    created_at: timestamp("created_at").defaultNow(),
-    updated_at: timestamp("updated_at").defaultNow(),
+exports.restaurant = (0, pg_core_1.pgTable)("restaurant", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    name: (0, pg_core_1.varchar)("name"),
+    street_address: (0, pg_core_1.varchar)("street_address"),
+    zip_code: (0, pg_core_1.varchar)("zip_code"),
+    city_id: (0, pg_core_1.integer)("city_id"),
 });
-export const orderRelations = relations(orders, ({ one, many }) => {
+exports.driver = (0, pg_core_1.pgTable)("driver", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    car_make: (0, pg_core_1.varchar)("car_make"),
+    car_model: (0, pg_core_1.varchar)("car_model"),
+    car_year: (0, pg_core_1.integer)("car_year"),
+    user_id: (0, pg_core_1.integer)("user_id").references(() => exports.users.id, {
+        onDelete: "cascade",
+    }),
+    online: (0, pg_core_1.boolean)("online"),
+    delivering: (0, pg_core_1.boolean)("delivering"),
+});
+exports.driverRelation = (0, drizzle_orm_1.relations)(exports.driver, ({ one, many }) => ({
+    users: one(exports.users, {
+        fields: [exports.driver.user_id],
+        references: [exports.users.id],
+    }),
+    orders: many(exports.orders),
+}));
+exports.restaurantRelations = (0, drizzle_orm_1.relations)(exports.restaurant, ({ many, one }) => ({
+    restaurant_owner: many(exports.restaurant_owner),
+    orders: many(exports.orders),
+    menu_item: many(exports.menu_item),
+    city: one(exports.city, {
+        fields: [exports.restaurant.city_id],
+        references: [exports.city.id],
+    }),
+}));
+exports.orders = (0, pg_core_1.pgTable)("orders", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    restaurant_id: (0, pg_core_1.integer)(" restaurant_id").references(() => exports.restaurant.id, {
+        onDelete: "cascade",
+    }),
+    estimated_delivery_time: (0, pg_core_1.date)("estimated_delivery_time"),
+    actual_delivery_time: (0, pg_core_1.date)("actual_delivery_time"),
+    delivery_address_id: (0, pg_core_1.integer)("delivery_address_id").references(() => exports.address.id, {
+        onDelete: "cascade",
+    }),
+    user_id: (0, pg_core_1.integer)("user_id").references(() => exports.users.id, {
+        onDelete: "cascade",
+    }),
+    driver_id: (0, pg_core_1.integer)("driver_id").references(() => exports.driver.id, {
+        onDelete: "cascade",
+    }),
+    price: (0, pg_core_1.numeric)("price"),
+    discount: (0, pg_core_1.numeric)("discount"),
+    final_price: (0, pg_core_1.numeric)("final_price"),
+    created_at: (0, pg_core_1.timestamp)("created_at").defaultNow(),
+    updated_at: (0, pg_core_1.timestamp)("updated_at").defaultNow(),
+});
+exports.orderRelations = (0, drizzle_orm_1.relations)(exports.orders, ({ one, many }) => {
     return {
-        user: one(users, {
-            fields: [orders.user_id],
-            references: [users.id],
+        user: one(exports.users, {
+            fields: [exports.orders.user_id],
+            references: [exports.users.id],
         }),
-        driver: one(driver, {
-            fields: [orders.driver_id],
-            references: [driver.id],
+        driver: one(exports.driver, {
+            fields: [exports.orders.driver_id],
+            references: [exports.driver.id],
         }),
-        address: one(address, {
-            fields: [orders.delivery_address_id],
-            references: [address.id],
+        address: one(exports.address, {
+            fields: [exports.orders.delivery_address_id],
+            references: [exports.address.id],
         }),
-        restaurant: one(restaurant, {
-            fields: [orders.restaurant_id],
-            references: [restaurant.id],
+        restaurant: one(exports.restaurant, {
+            fields: [exports.orders.restaurant_id],
+            references: [exports.restaurant.id],
         }),
-        order_status: many(order_status),
-        order_menu_item: many(order_menu_item),
+        order_status: many(exports.order_status),
+        order_menu_item: many(exports.order_menu_item),
     };
 });
-export const order_status = pgTable("order_status", {
-    id: serial("id").primaryKey(),
-    order_id: integer("order_id").references(() => orders.id, {
+exports.order_status = (0, pg_core_1.pgTable)("order_status", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    order_id: (0, pg_core_1.integer)("order_id").references(() => exports.orders.id, {
         onDelete: "cascade",
     }),
-    status_catalog_id: integer("status_catalog_id").references(() => status_catalog.id),
-    created_at: timestamp("created_at").defaultNow(),
+    status_catalog_id: (0, pg_core_1.integer)("status_catalog_id").references(() => exports.status_catalog.id),
+    created_at: (0, pg_core_1.timestamp)("created_at").defaultNow(),
 });
-export const orderStatusRelations = relations(order_status, ({ one }) => ({
-    status_catalogue: one(status_catalog, {
-        fields: [order_status.status_catalog_id],
-        references: [status_catalog.id],
+exports.orderStatusRelations = (0, drizzle_orm_1.relations)(exports.order_status, ({ one }) => ({
+    status_catalogue: one(exports.status_catalog, {
+        fields: [exports.order_status.status_catalog_id],
+        references: [exports.status_catalog.id],
     }),
-    orders: one(orders, {
-        fields: [order_status.id],
-        references: [orders.id],
+    orders: one(exports.orders, {
+        fields: [exports.order_status.id],
+        references: [exports.orders.id],
     }),
 }));
-export const status_catalog = pgTable("status_catalog", {
-    id: serial("id").primaryKey(),
-    name: varchar("name"),
+exports.status_catalog = (0, pg_core_1.pgTable)("status_catalog", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    name: (0, pg_core_1.varchar)("name"),
 });
-export const statusCatalogRelations = relations(status_catalog, ({ many }) => ({
-    order_status: many(order_status),
+exports.statusCatalogRelations = (0, drizzle_orm_1.relations)(exports.status_catalog, ({ many }) => ({
+    order_status: many(exports.order_status),
 }));
-export const order_menu_item = pgTable("order_menu_item", {
-    id: serial("id").primaryKey(),
-    order_id: integer("order_id").references(() => orders.id, {
+exports.order_menu_item = (0, pg_core_1.pgTable)("order_menu_item", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    order_id: (0, pg_core_1.integer)("order_id").references(() => exports.orders.id, {
         onDelete: "cascade",
     }),
-    menu_item_id: integer("menu_item_id").references(() => menu_item.id, {
+    menu_item_id: (0, pg_core_1.integer)("menu_item_id").references(() => exports.menu_item.id, {
         onDelete: "cascade",
     }),
-    quantity: integer("quantity"),
-    item_price: numeric("item_price"),
-    price: numeric("price"),
-    comment: text("comment"),
+    quantity: (0, pg_core_1.integer)("quantity"),
+    item_price: (0, pg_core_1.numeric)("item_price"),
+    price: (0, pg_core_1.numeric)("price"),
+    comment: (0, pg_core_1.text)("comment"),
 });
-export const orderMenuRelations = relations(order_menu_item, ({ one }) => ({
-    orders: one(orders, {
-        fields: [order_menu_item.order_id],
-        references: [orders.id],
+exports.orderMenuRelations = (0, drizzle_orm_1.relations)(exports.order_menu_item, ({ one }) => ({
+    orders: one(exports.orders, {
+        fields: [exports.order_menu_item.order_id],
+        references: [exports.orders.id],
     }),
-    menu_item: one(menu_item, {
-        fields: [order_menu_item.menu_item_id],
-        references: [menu_item.id],
+    menu_item: one(exports.menu_item, {
+        fields: [exports.order_menu_item.menu_item_id],
+        references: [exports.menu_item.id],
     }),
 }));
-export const menu_item = pgTable("menu_item", {
-    id: serial("id").primaryKey(),
-    name: varchar("name"),
-    restaurant_id: integer("restaurant_id").references(() => restaurant.id, {
+exports.menu_item = (0, pg_core_1.pgTable)("menu_item", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    name: (0, pg_core_1.varchar)("name"),
+    restaurant_id: (0, pg_core_1.integer)("restaurant_id").references(() => exports.restaurant.id, {
         onDelete: "cascade",
     }),
-    category_id: integer("category_id").references(() => category.id, {
+    category_id: (0, pg_core_1.integer)("category_id").references(() => exports.category.id, {
         onDelete: "cascade",
     }),
-    description: varchar("description"),
-    ingredients: varchar("ingredients"),
-    price: numeric("price"),
-    active: boolean("active"),
-    created_at: timestamp("created_at").defaultNow(),
-    updated_at: timestamp("updated_at").defaultNow(),
+    description: (0, pg_core_1.varchar)("description"),
+    ingredients: (0, pg_core_1.varchar)("ingredients"),
+    price: (0, pg_core_1.numeric)("price"),
+    active: (0, pg_core_1.boolean)("active"),
+    created_at: (0, pg_core_1.timestamp)("created_at").defaultNow(),
+    updated_at: (0, pg_core_1.timestamp)("updated_at").defaultNow(),
 });
-export const menuItemRelations = relations(menu_item, ({ many, one }) => ({
-    order_menu_item: many(order_menu_item),
-    category: one(category, {
-        fields: [menu_item.category_id],
-        references: [category.id],
+exports.menuItemRelations = (0, drizzle_orm_1.relations)(exports.menu_item, ({ many, one }) => ({
+    order_menu_item: many(exports.order_menu_item),
+    category: one(exports.category, {
+        fields: [exports.menu_item.category_id],
+        references: [exports.category.id],
     }),
-    restaurant: one(restaurant, {
-        fields: [menu_item.restaurant_id],
-        references: [restaurant.id],
+    restaurant: one(exports.restaurant, {
+        fields: [exports.menu_item.restaurant_id],
+        references: [exports.restaurant.id],
     }),
 }));
-export const city = pgTable("city", {
-    id: serial("id").primaryKey(),
-    name: varchar("name"),
-    state_id: integer("state_id").references(() => state.id, {
+exports.city = (0, pg_core_1.pgTable)("city", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    name: (0, pg_core_1.varchar)("name"),
+    state_id: (0, pg_core_1.integer)("state_id").references(() => exports.state.id, {
         onDelete: "cascade",
     }),
 });
-export const cityRelations = relations(city, ({ many, one }) => ({
-    address: many(address),
-    restaurant: many(restaurant),
-    state: one(state, {
-        fields: [city.state_id],
-        references: [state.id],
+exports.cityRelations = (0, drizzle_orm_1.relations)(exports.city, ({ many, one }) => ({
+    address: many(exports.address),
+    restaurant: many(exports.restaurant),
+    state: one(exports.state, {
+        fields: [exports.city.state_id],
+        references: [exports.state.id],
     }),
 }));
-export const state = pgTable("state", {
-    id: serial("id").primaryKey(),
-    name: varchar("name"),
-    code: varchar("code"),
+exports.state = (0, pg_core_1.pgTable)("state", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    name: (0, pg_core_1.varchar)("name"),
+    code: (0, pg_core_1.varchar)("code"),
 });
-export const stateRelation = relations(state, ({ many }) => ({
-    city: many(city),
+exports.stateRelation = (0, drizzle_orm_1.relations)(exports.state, ({ many }) => ({
+    city: many(exports.city),
 }));
-export const category = pgTable("category", {
-    id: serial("id").primaryKey(),
-    name: varchar("name"),
+exports.category = (0, pg_core_1.pgTable)("category", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    name: (0, pg_core_1.varchar)("name"),
 });
-export const categoryRelations = relations(category, ({ many }) => ({
-    menu_item: many(menu_item),
+exports.categoryRelations = (0, drizzle_orm_1.relations)(exports.category, ({ many }) => ({
+    menu_item: many(exports.menu_item),
 }));
-export const address = pgTable("address", {
-    id: serial("id").primaryKey(),
-    street_address_1: varchar("street_address_1"),
-    street_address_2: varchar("street_address_2"),
-    zip_code: varchar("zip_code"),
-    delivery_instructions: varchar("delivery_instructions"),
-    user_id: integer("user_id").references(() => users.id),
-    city_id: integer("city_id").references(() => city.id),
-    created_at: timestamp("created_at").defaultNow(),
-    updated_at: timestamp("updated_at").defaultNow(),
+exports.address = (0, pg_core_1.pgTable)("address", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    street_address_1: (0, pg_core_1.varchar)("street_address_1"),
+    street_address_2: (0, pg_core_1.varchar)("street_address_2"),
+    zip_code: (0, pg_core_1.varchar)("zip_code"),
+    delivery_instructions: (0, pg_core_1.varchar)("delivery_instructions"),
+    user_id: (0, pg_core_1.integer)("user_id").references(() => exports.users.id),
+    city_id: (0, pg_core_1.integer)("city_id").references(() => exports.city.id),
+    created_at: (0, pg_core_1.timestamp)("created_at").defaultNow(),
+    updated_at: (0, pg_core_1.timestamp)("updated_at").defaultNow(),
 });
-export const addressRelations = relations(address, ({ one, many }) => ({
-    users: one(users, {
-        fields: [address.user_id],
-        references: [users.id],
+exports.addressRelations = (0, drizzle_orm_1.relations)(exports.address, ({ one, many }) => ({
+    users: one(exports.users, {
+        fields: [exports.address.user_id],
+        references: [exports.users.id],
     }),
-    city: one(city, {
-        fields: [address.city_id],
-        references: [city.id],
+    city: one(exports.city, {
+        fields: [exports.address.city_id],
+        references: [exports.city.id],
     }),
-    orders: many(orders),
+    orders: many(exports.orders),
 }));
-export const comment = pgTable("comment", {
-    id: serial("id").primaryKey(),
-    user_id: integer("user_id"),
-    order_id: integer("order_id").references(() => orders.id, {
+exports.comment = (0, pg_core_1.pgTable)("comment", {
+    id: (0, pg_core_1.serial)("id").primaryKey(),
+    user_id: (0, pg_core_1.integer)("user_id"),
+    order_id: (0, pg_core_1.integer)("order_id").references(() => exports.orders.id, {
         onDelete: "cascade",
     }),
-    comment_text: varchar("comment_text"),
-    is_complaint: boolean("is_complaint"),
-    is_praise: boolean("is_praise"),
-    street_address_2: varchar("street_address_2"),
-    zip_code: varchar("zip_code"),
-    delivery_instructions: varchar("delivery_instructions"),
-    created_at: timestamp("created_at").defaultNow(),
-    updated_at: timestamp("updated_at").defaultNow(),
+    comment_text: (0, pg_core_1.varchar)("comment_text"),
+    is_complaint: (0, pg_core_1.boolean)("is_complaint"),
+    is_praise: (0, pg_core_1.boolean)("is_praise"),
+    street_address_2: (0, pg_core_1.varchar)("street_address_2"),
+    zip_code: (0, pg_core_1.varchar)("zip_code"),
+    delivery_instructions: (0, pg_core_1.varchar)("delivery_instructions"),
+    created_at: (0, pg_core_1.timestamp)("created_at").defaultNow(),
+    updated_at: (0, pg_core_1.timestamp)("updated_at").defaultNow(),
 });
-export const commentRelations = relations(comment, ({ one }) => ({
-    orders: one(orders, {
-        fields: [comment.order_id],
-        references: [orders.id],
+exports.commentRelations = (0, drizzle_orm_1.relations)(exports.comment, ({ one }) => ({
+    orders: one(exports.orders, {
+        fields: [exports.comment.order_id],
+        references: [exports.orders.id],
     }),
-    users: one(users, {
-        fields: [comment.user_id],
-        references: [users.id],
+    users: one(exports.users, {
+        fields: [exports.comment.user_id],
+        references: [exports.users.id],
     }),
 }));

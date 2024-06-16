@@ -1,6 +1,9 @@
-import { serveAllOrderMenu, serveOrderMenu, fetchOneOrderMenu, serveOrderMenuUpdate, deleteOrderMenu, } from "./order_menu.service";
-export async function getAllOrderMenu(c) {
-    const response = await serveAllOrderMenu();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.removeOrderMenu = exports.updateOrderMenu = exports.addOrderMenu = exports.getOneOrderMenu = exports.getAllOrderMenu = void 0;
+const order_menu_service_1 = require("./order_menu.service");
+async function getAllOrderMenu(c) {
+    const response = await (0, order_menu_service_1.serveAllOrderMenu)();
     try {
         if (response === null) {
             return c.json({ message: "No registered order menu item" });
@@ -11,9 +14,10 @@ export async function getAllOrderMenu(c) {
         return c.json(error, 404);
     }
 }
-export async function getOneOrderMenu(c) {
+exports.getAllOrderMenu = getAllOrderMenu;
+async function getOneOrderMenu(c) {
     const id = Number(c.req.param("id"));
-    const response = await fetchOneOrderMenu(id);
+    const response = await (0, order_menu_service_1.fetchOneOrderMenu)(id);
     try {
         if (response === null) {
             return c.json({ message: "Order menu is currently empty" });
@@ -24,9 +28,10 @@ export async function getOneOrderMenu(c) {
         return c.json(error);
     }
 }
-export async function addOrderMenu(c) {
+exports.getOneOrderMenu = getOneOrderMenu;
+async function addOrderMenu(c) {
     const newOrderMenu = await c.req.json();
-    const response = await serveOrderMenu(newOrderMenu);
+    const response = await (0, order_menu_service_1.serveOrderMenu)(newOrderMenu);
     try {
         if (response === null) {
             return c.json({ message: "Unable to add new order menu" }, 404);
@@ -42,10 +47,11 @@ export async function addOrderMenu(c) {
         return c.json(error);
     }
 }
-export async function updateOrderMenu(c) {
+exports.addOrderMenu = addOrderMenu;
+async function updateOrderMenu(c) {
     const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
-    const response = await serveOrderMenuUpdate(id, updateContent);
+    const response = await (0, order_menu_service_1.serveOrderMenuUpdate)(id, updateContent);
     try {
         if (response === null) {
             return c.json({ message: "Order menu does not exist" }, 404);
@@ -56,9 +62,10 @@ export async function updateOrderMenu(c) {
         return c.json({ message: error });
     }
 }
-export async function removeOrderMenu(c) {
+exports.updateOrderMenu = updateOrderMenu;
+async function removeOrderMenu(c) {
     const id = Number(c.req.param("id"));
-    const response = await deleteOrderMenu(id);
+    const response = await (0, order_menu_service_1.deleteOrderMenu)(id);
     try {
         if (response === null) {
             return c.json({ message: "Order menu item does not exist" }, 404);
@@ -71,3 +78,4 @@ export async function removeOrderMenu(c) {
         return c.json({ message: error });
     }
 }
+exports.removeOrderMenu = removeOrderMenu;

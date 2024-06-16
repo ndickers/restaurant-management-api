@@ -1,21 +1,24 @@
-import { Hono } from "hono";
-import { zValidator } from "@hono/zod-validator";
-import { z } from "zod";
-import { getAllStatusCatalog, addStatusCatalog, getOneStatusCatalog, updateStatusCatalog, deleteCatalogStatus, } from "./status_cat.controller";
-import { adminAuth, authorizeAll } from "../middleware/authorize";
-export const statusCatalogRoute = new Hono();
-const inputStatusCatalog = z.object({
-    name: z.string(),
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.statusCatalogRoute = void 0;
+const hono_1 = require("hono");
+const zod_validator_1 = require("@hono/zod-validator");
+const zod_1 = require("zod");
+const status_cat_controller_1 = require("./status_cat.controller");
+const authorize_1 = require("../middleware/authorize");
+exports.statusCatalogRoute = new hono_1.Hono();
+const inputStatusCatalog = zod_1.z.object({
+    name: zod_1.z.string(),
 });
-statusCatalogRoute.delete("/status-catalog/:id", authorizeAll, deleteCatalogStatus);
-statusCatalogRoute.get("/status-catalog", adminAuth, getAllStatusCatalog);
-statusCatalogRoute.get("/status-catalog/:id", authorizeAll, getOneStatusCatalog);
-statusCatalogRoute.patch("/status-catalog/:id", authorizeAll, updateStatusCatalog);
-statusCatalogRoute.post("/status-catalog", zValidator("json", inputStatusCatalog, (result, c) => {
+exports.statusCatalogRoute.delete("/status-catalog/:id", authorize_1.authorizeAll, status_cat_controller_1.deleteCatalogStatus);
+exports.statusCatalogRoute.get("/status-catalog", authorize_1.adminAuth, status_cat_controller_1.getAllStatusCatalog);
+exports.statusCatalogRoute.get("/status-catalog/:id", authorize_1.authorizeAll, status_cat_controller_1.getOneStatusCatalog);
+exports.statusCatalogRoute.patch("/status-catalog/:id", authorize_1.authorizeAll, status_cat_controller_1.updateStatusCatalog);
+exports.statusCatalogRoute.post("/status-catalog", (0, zod_validator_1.zValidator)("json", inputStatusCatalog, (result, c) => {
     if (result.success) {
         return c.json({ message: "Succesfully added" });
     }
     else {
         return c.json({ message: "Confirm your data types" });
     }
-}), authorizeAll, addStatusCatalog);
+}), authorize_1.authorizeAll, status_cat_controller_1.addStatusCatalog);

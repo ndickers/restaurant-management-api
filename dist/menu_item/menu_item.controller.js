@@ -1,6 +1,9 @@
-import { serveAllMenuItem, serveMenuItem, fetchOneMenuItem, serveMenuItemUpdate, deleteMenuItem, } from "./menu_item.service";
-export async function getAllMenuItem(c) {
-    const response = await serveAllMenuItem();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.removeMenuItem = exports.updateMenuItem = exports.addMenuItem = exports.getOneMenuItem = exports.getAllMenuItem = void 0;
+const menu_item_service_1 = require("./menu_item.service");
+async function getAllMenuItem(c) {
+    const response = await (0, menu_item_service_1.serveAllMenuItem)();
     try {
         if (response.length === 0) {
             return c.json({ message: "No registered menu item" });
@@ -11,9 +14,10 @@ export async function getAllMenuItem(c) {
         return c.json({ message: error });
     }
 }
-export async function getOneMenuItem(c) {
+exports.getAllMenuItem = getAllMenuItem;
+async function getOneMenuItem(c) {
     const id = Number(c.req.param("id"));
-    const response = await fetchOneMenuItem(id);
+    const response = await (0, menu_item_service_1.fetchOneMenuItem)(id);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "The list menu does not exist" });
@@ -24,9 +28,10 @@ export async function getOneMenuItem(c) {
         return c.json({ message: error });
     }
 }
-export async function addMenuItem(c) {
+exports.getOneMenuItem = getOneMenuItem;
+async function addMenuItem(c) {
     const newItemMenu = await c.req.json();
-    const response = await serveMenuItem(newItemMenu);
+    const response = await (0, menu_item_service_1.serveMenuItem)(newItemMenu);
     try {
         if (response) {
             return c.json({
@@ -42,10 +47,11 @@ export async function addMenuItem(c) {
         return c.json({ message: error });
     }
 }
-export async function updateMenuItem(c) {
+exports.addMenuItem = addMenuItem;
+async function updateMenuItem(c) {
     const id = Number(c.req.param("id"));
     const updateContent = await c.req.json();
-    const response = await serveMenuItemUpdate(id, updateContent);
+    const response = await (0, menu_item_service_1.serveMenuItemUpdate)(id, updateContent);
     try {
         if (Object.keys(response).length === 0) {
             return c.json({ message: "You cannot update non existsing menu item" }, 404);
@@ -56,9 +62,10 @@ export async function updateMenuItem(c) {
         return c.json({ message: error });
     }
 }
-export async function removeMenuItem(c) {
+exports.updateMenuItem = updateMenuItem;
+async function removeMenuItem(c) {
     const id = Number(c.req.param("id"));
-    const response = await deleteMenuItem(id);
+    const response = await (0, menu_item_service_1.deleteMenuItem)(id);
     try {
         if (Object.keys(response).length !== 0) {
             return c.json({ message: "Menu item does not exist" }, 404);
@@ -71,3 +78,4 @@ export async function removeMenuItem(c) {
         return c.json({ message: error });
     }
 }
+exports.removeMenuItem = removeMenuItem;

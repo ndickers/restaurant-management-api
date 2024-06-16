@@ -1,6 +1,7 @@
+import "dotenv/config";
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
-import { userRoute } from "./users/users.route";
+import { userRoute } from "./users/users.routes";
 import { driverRoute } from "./driver/driver.routes";
 import { restaurantRoute } from "./restaurant/restaurant.routes";
 import { orderStatusRoute } from "./order_status/order_status.routes";
@@ -32,7 +33,7 @@ app.route("/", stateRoutes);
 app.route("/", cityRoutes);
 app.route("/", addressRoutes);
 app.route("/", categoryRoutes);
-const port = 8080;
+const port = Number(process.env.PORT);
 console.log(`Server is running on port ${port}`);
 
 serve({

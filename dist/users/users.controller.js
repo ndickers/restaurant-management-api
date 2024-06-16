@@ -1,6 +1,9 @@
-import { serveAllUsers, serveOneUser, addToService, updateWhole, deleteService, } from "./users.service";
-export async function getAllUsers(c) {
-    const response = await serveAllUsers();
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.deleteUser = exports.updateWholeUser = exports.addNewUser = exports.getOneUser = exports.getAllUsers = void 0;
+const users_service_1 = require("./users.service");
+async function getAllUsers(c) {
+    const response = await (0, users_service_1.serveAllUsers)();
     try {
         if (response === null) {
             return c.json({ message: "Users cannot be fetched" });
@@ -14,9 +17,10 @@ export async function getAllUsers(c) {
         return c.json({ message: error });
     }
 }
-export async function getOneUser(c) {
+exports.getAllUsers = getAllUsers;
+async function getOneUser(c) {
     const id = Number(c.req.param("id"));
-    const response = await serveOneUser(id);
+    const response = await (0, users_service_1.serveOneUser)(id);
     try {
         if (response === null) {
             return c.json({ message: "The user does not exist" }, 404);
@@ -27,9 +31,10 @@ export async function getOneUser(c) {
         return c.json({ message: error });
     }
 }
-export async function addNewUser(c) {
+exports.getOneUser = getOneUser;
+async function addNewUser(c) {
     const newUser = await c.req.json();
-    const response = await addToService(newUser);
+    const response = await (0, users_service_1.addToService)(newUser);
     try {
         if (response === null) {
             return c.json({ message: "Unable to add the user" });
@@ -40,10 +45,11 @@ export async function addNewUser(c) {
         return c.json({ message: error });
     }
 }
-export async function updateWholeUser(c) {
+exports.addNewUser = addNewUser;
+async function updateWholeUser(c) {
     const id = Number(c.req.param("id"));
     const updateUser = await c.req.json();
-    const response = await updateWhole(id, updateUser);
+    const response = await (0, users_service_1.updateWhole)(id, updateUser);
     try {
         if (response === null) {
             return c.json({
@@ -56,9 +62,10 @@ export async function updateWholeUser(c) {
         return c.json({ message: error });
     }
 }
-export async function deleteUser(c) {
+exports.updateWholeUser = updateWholeUser;
+async function deleteUser(c) {
     const id = Number(c.req.param("id"));
-    const response = await deleteService(id);
+    const response = await (0, users_service_1.deleteService)(id);
     try {
         if (response === null) {
             return c.json({ message: "Unable to delete the user" });
@@ -69,3 +76,4 @@ export async function deleteUser(c) {
         return c.json({ message: error });
     }
 }
+exports.deleteUser = deleteUser;
